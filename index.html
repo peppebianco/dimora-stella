@@ -1,0 +1,1629 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dimora Stella – B&B a Pezze di Greco</title>
+<meta name="description" content="Dimora Stella, splendido B&B in stile pugliese nel cuore di Pezze di Greco. Lamia a stella in tufo a faccia vista, vicino al mare e alle città barocche della Valle d'Itria.">
+
+<!-- Flatpickr date picker -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+<script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/l10n/it.js"></script>
+
+<!-- Font Google -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&family=Lato:wght@300;400;700&display=swap" rel="stylesheet">
+
+<style>
+  /* ════════════════════════════════════════
+     ROOT & RESET
+  ════════════════════════════════════════ */
+  :root {
+    --panna:   #FDF6EC;
+    --crema:   #F5E8D0;
+    --tufo:    #E2C99A;
+    --rosa:    #F0DDD0;
+    --caffe:   #9B6E3E;
+    --noce:    #6B3F1C;
+    --testo:   #4A2E10;
+    --bianco:  #FFFFFF;
+    --ombra:   rgba(107,63,28,.18);
+    --r: 0.6rem;
+  }
+
+  *, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+
+  html { scroll-behavior: smooth; font-size: 16px; }
+
+  body {
+    font-family: 'Lato', sans-serif;
+    background: var(--panna);
+    color: var(--testo);
+    overflow-x: hidden;
+  }
+
+  h1,h2,h3,h4 { font-family:'Cormorant Garamond', serif; }
+  a { text-decoration:none; color:inherit; }
+
+  img { display:block; width:100%; height:100%; object-fit:cover; }
+
+  /* ════════════════════════════════════════
+     NAV
+  ════════════════════════════════════════ */
+  nav {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 1000;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 1rem 2.5rem;
+    background: rgba(253,246,236,.92);
+    backdrop-filter: blur(10px);
+    border-bottom: 1px solid var(--tufo);
+    transition: padding .3s;
+  }
+  nav.scrolled { padding: .6rem 2.5rem; }
+
+  .nav-logo {
+    font-family:'Cormorant Garamond', serif;
+    font-size: 1.5rem;
+    font-weight: 400;
+    letter-spacing: .15em;
+    color: var(--noce);
+  }
+  .nav-logo span { font-style: italic; color: var(--caffe); }
+
+  .nav-links { display:flex; gap:2rem; list-style:none; }
+  .nav-links a {
+    font-size: .78rem;
+    letter-spacing: .12em;
+    text-transform: uppercase;
+    color: var(--testo);
+    opacity:.8;
+    transition: opacity .2s, color .2s;
+  }
+  .nav-links a:hover { opacity:1; color: var(--caffe); }
+
+  .btn-prenota-nav {
+    background: var(--caffe);
+    color: #fff !important;
+    padding: .5rem 1.4rem;
+    border-radius: 2rem;
+    opacity: 1 !important;
+    font-weight:700;
+    transition: background .2s !important;
+  }
+  .btn-prenota-nav:hover { background: var(--noce) !important; }
+
+  .hamburger { display:none; flex-direction:column; gap:5px; cursor:pointer; }
+  .hamburger span { display:block; width:24px; height:2px; background:var(--noce); border-radius:2px; transition:.3s; }
+
+  /* ════════════════════════════════════════
+     HERO
+  ════════════════════════════════════════ */
+  #hero {
+    height: 100vh;
+    min-height: 600px;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+  }
+
+  .hero-slider {
+    position: absolute;
+    inset: 0;
+  }
+  .hero-slide {
+    position: absolute;
+    inset: 0;
+    opacity: 0;
+    transition: opacity 1.2s ease;
+    background-color: #c9a97a;
+    background-size: cover;
+    background-position: center;
+  }
+  .hero-slide.active { opacity:1; }
+
+  .hero-slide:nth-child(1) { background-image: url('foto/foto5.jpg'); }
+  .hero-slide:nth-child(2) { background-image: url('foto/foto4.jpg'); }
+  .hero-slide:nth-child(3) { background-image: url('foto/foto1.jpg'); }
+
+  .hero-overlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+      to bottom,
+      rgba(74,46,16,.25) 0%,
+      rgba(74,46,16,.45) 60%,
+      rgba(74,46,16,.7) 100%
+    );
+  }
+
+  .hero-content {
+    position: relative;
+    text-align: center;
+    color: #fff;
+    padding: 2rem;
+    max-width: 700px;
+  }
+  .hero-content .eyebrow {
+    font-size:.75rem;
+    letter-spacing:.35em;
+    text-transform:uppercase;
+    opacity:.85;
+    margin-bottom:1.2rem;
+  }
+  .hero-content h1 {
+    font-size: clamp(3rem, 8vw, 5.5rem);
+    font-weight:300;
+    letter-spacing:.08em;
+    line-height:1.05;
+    text-shadow: 0 2px 20px rgba(0,0,0,.35);
+    margin-bottom:.8rem;
+  }
+  .hero-content h1 em {
+    font-style:italic;
+    font-weight:300;
+    color: #F5E8D0;
+  }
+  .hero-content .subtitle {
+    font-size:1rem;
+    letter-spacing:.1em;
+    opacity:.9;
+    margin-bottom:2.5rem;
+    font-weight:300;
+  }
+  .hero-btns { display:flex; gap:1rem; justify-content:center; flex-wrap:wrap; }
+
+  .btn {
+    padding:.85rem 2.2rem;
+    border-radius:3rem;
+    font-size:.82rem;
+    letter-spacing:.1em;
+    text-transform:uppercase;
+    font-weight:700;
+    cursor:pointer;
+    border:none;
+    transition: all .25s;
+    display:inline-block;
+  }
+  .btn-primary { background:var(--caffe); color:#fff; }
+  .btn-primary:hover { background:var(--noce); transform:translateY(-2px); box-shadow:0 8px 24px rgba(0,0,0,.25); }
+  .btn-outline { background:transparent; color:#fff; border:2px solid rgba(255,255,255,.7); }
+  .btn-outline:hover { background:rgba(255,255,255,.15); border-color:#fff; }
+
+  .hero-dots {
+    position: absolute;
+    bottom: 2rem;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    gap: .6rem;
+  }
+  .hero-dot {
+    width:8px; height:8px;
+    border-radius:50%;
+    background:rgba(255,255,255,.4);
+    cursor:pointer;
+    transition:.3s;
+  }
+  .hero-dot.active { background:#fff; transform:scale(1.3); }
+
+  /* ════════════════════════════════════════
+     STRIP CARATTERISTICHE
+  ════════════════════════════════════════ */
+  .strip {
+    background: var(--caffe);
+    color: #fff;
+    display: flex;
+    justify-content: center;
+    gap: 3rem;
+    padding: 1.2rem 2rem;
+    flex-wrap: wrap;
+  }
+  .strip-item {
+    display:flex;
+    align-items:center;
+    gap:.6rem;
+    font-size:.78rem;
+    letter-spacing:.1em;
+    text-transform:uppercase;
+    font-weight:700;
+  }
+  .strip-item .icon { font-size:1.1rem; }
+
+  /* ════════════════════════════════════════
+     SEZIONI GENERALI
+  ════════════════════════════════════════ */
+  section { padding: 6rem 2rem; }
+
+  .container { max-width:1100px; margin:0 auto; }
+
+  .section-label {
+    font-size:.72rem;
+    letter-spacing:.3em;
+    text-transform:uppercase;
+    color:var(--caffe);
+    font-weight:700;
+    margin-bottom:.8rem;
+    display:block;
+  }
+  .section-title {
+    font-size: clamp(2rem, 4vw, 3rem);
+    font-weight:300;
+    line-height:1.15;
+    margin-bottom:1.5rem;
+    color:var(--noce);
+  }
+  .section-title em { font-style:italic; color:var(--caffe); }
+  .section-divider {
+    width:50px;
+    height:2px;
+    background:var(--tufo);
+    margin-bottom:2rem;
+  }
+
+  /* ════════════════════════════════════════
+     ABOUT
+  ════════════════════════════════════════ */
+  #about { background: var(--panna); }
+
+  .about-grid {
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:5rem;
+    align-items:center;
+  }
+
+  .about-text p {
+    font-size:1.05rem;
+    line-height:1.85;
+    opacity:.85;
+    margin-bottom:1.2rem;
+    font-weight:300;
+  }
+
+  .about-features {
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:1rem;
+    margin-top:2rem;
+  }
+  .about-feature {
+    display:flex;
+    align-items:flex-start;
+    gap:.7rem;
+    padding:1rem;
+    background:var(--crema);
+    border-radius:var(--r);
+    border-left:3px solid var(--tufo);
+  }
+  .about-feature .ico { font-size:1.3rem; flex-shrink:0; margin-top:.1rem; }
+  .about-feature strong { display:block; font-size:.85rem; font-weight:700; color:var(--noce); margin-bottom:.2rem; }
+  .about-feature span { font-size:.8rem; opacity:.7; line-height:1.4; }
+
+  .about-images {
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    grid-template-rows:220px 220px;
+    gap:1rem;
+  }
+  .about-img {
+    border-radius:var(--r);
+    overflow:hidden;
+    box-shadow:0 8px 30px var(--ombra);
+    background:var(--crema);
+  }
+  .about-img:first-child {
+    grid-row: 1 / 3;
+    grid-column: 1;
+  }
+
+  /* ════════════════════════════════════════
+     GALLERY
+  ════════════════════════════════════════ */
+  #gallery { background: var(--crema); }
+
+  .gallery-grid {
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    grid-template-rows:280px 280px;
+    gap:1rem;
+  }
+  .gallery-item {
+    border-radius:var(--r);
+    overflow:hidden;
+    background:var(--tufo);
+    cursor:pointer;
+    position:relative;
+  }
+  .gallery-item:first-child {
+    grid-column: 1;
+    grid-row: 1 / 3;
+  }
+  .gallery-item img, .gallery-item .img-ph {
+    width:100%; height:100%;
+    object-fit:cover;
+    transition:transform .5s ease;
+  }
+  .gallery-item:hover img { transform:scale(1.06); }
+
+  .gallery-item .img-ph {
+    background:var(--tufo);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    color:var(--noce);
+    font-size:2rem;
+    opacity:.5;
+  }
+
+  .gallery-overlay {
+    position:absolute;
+    inset:0;
+    background:rgba(74,46,16,0);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    transition:.3s;
+  }
+  .gallery-overlay span {
+    color:#fff;
+    font-size:2rem;
+    opacity:0;
+    transition:.3s;
+  }
+  .gallery-item:hover .gallery-overlay { background:rgba(74,46,16,.3); }
+  .gallery-item:hover .gallery-overlay span { opacity:1; }
+
+  /* Lightbox */
+  .lightbox {
+    display:none;
+    position:fixed;
+    inset:0;
+    z-index:2000;
+    background:rgba(0,0,0,.92);
+    align-items:center;
+    justify-content:center;
+    padding:2rem;
+  }
+  .lightbox.open { display:flex; }
+  .lightbox img {
+    max-width:90vw;
+    max-height:85vh;
+    object-fit:contain;
+    border-radius:4px;
+  }
+  .lb-close {
+    position:absolute;
+    top:1.5rem; right:2rem;
+    color:#fff;
+    font-size:2.5rem;
+    cursor:pointer;
+    opacity:.7;
+    transition:.2s;
+  }
+  .lb-close:hover { opacity:1; }
+  .lb-nav {
+    position:absolute;
+    top:50%;
+    transform:translateY(-50%);
+    color:#fff;
+    font-size:2.5rem;
+    cursor:pointer;
+    opacity:.6;
+    transition:.2s;
+    user-select:none;
+    padding:1rem;
+  }
+  .lb-nav:hover { opacity:1; }
+  .lb-prev { left:1rem; }
+  .lb-next { right:1rem; }
+
+  /* ════════════════════════════════════════
+     LOCATION
+  ════════════════════════════════════════ */
+  #location { background: var(--rosa); }
+
+  .location-grid {
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:4rem;
+    align-items:start;
+  }
+
+  .location-list {
+    list-style:none;
+    margin-top:1.5rem;
+  }
+  .location-list li {
+    display:flex;
+    align-items:flex-start;
+    gap:.8rem;
+    padding:.9rem 0;
+    border-bottom:1px solid rgba(155,110,62,.2);
+    font-size:.95rem;
+    line-height:1.5;
+  }
+  .location-list li:last-child { border-bottom:none; }
+  .location-list .loc-icon { font-size:1.2rem; flex-shrink:0; margin-top:.05rem; }
+  .location-list .loc-dist { margin-left:auto; font-size:.8rem; color:var(--caffe); font-weight:700; white-space:nowrap; }
+
+  .map-box {
+    border-radius:var(--r);
+    overflow:hidden;
+    box-shadow:0 8px 30px var(--ombra);
+    height:400px;
+    background:var(--crema);
+    position:relative;
+  }
+  .map-box iframe {
+    width:100%;
+    height:100%;
+    border:none;
+  }
+  .map-placeholder {
+    width:100%;
+    height:100%;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+    gap:1rem;
+    color:var(--caffe);
+    font-family:'Cormorant Garamond',serif;
+    font-size:1.3rem;
+  }
+  .map-placeholder .map-ico { font-size:3rem; }
+  .map-open-btn {
+    margin-top:.5rem;
+    background:var(--caffe);
+    color:#fff;
+    padding:.7rem 1.8rem;
+    border-radius:2rem;
+    font-size:.82rem;
+    letter-spacing:.1em;
+    text-transform:uppercase;
+    font-weight:700;
+    display:inline-block;
+    transition:.2s;
+  }
+  .map-open-btn:hover { background:var(--noce); }
+
+  /* ════════════════════════════════════════
+     BOOKING
+  ════════════════════════════════════════ */
+  #booking { background: var(--panna); }
+
+  .booking-grid {
+    display:grid;
+    grid-template-columns:1.2fr 1fr;
+    gap:4rem;
+    align-items:start;
+  }
+
+  .booking-card {
+    background:#fff;
+    border-radius:1rem;
+    padding:2.5rem;
+    box-shadow:0 12px 50px var(--ombra);
+    border: 1px solid var(--tufo);
+  }
+  .booking-card h3 {
+    font-size:1.6rem;
+    color:var(--noce);
+    margin-bottom:.3rem;
+    font-weight:400;
+  }
+  .booking-card .bc-sub {
+    font-size:.82rem;
+    opacity:.6;
+    margin-bottom:2rem;
+    letter-spacing:.05em;
+  }
+
+  .form-row { display:grid; grid-template-columns:1fr 1fr; gap:1rem; margin-bottom:1rem; }
+
+  .form-group {
+    display:flex;
+    flex-direction:column;
+    gap:.4rem;
+    margin-bottom:1rem;
+  }
+  .form-group label {
+    font-size:.75rem;
+    letter-spacing:.1em;
+    text-transform:uppercase;
+    font-weight:700;
+    color:var(--caffe);
+  }
+  .form-group input,
+  .form-group select,
+  .form-group textarea {
+    border:1.5px solid var(--tufo);
+    border-radius:var(--r);
+    padding:.75rem 1rem;
+    font-family:'Lato',sans-serif;
+    font-size:.95rem;
+    background:var(--panna);
+    color:var(--testo);
+    transition:border .2s;
+    outline:none;
+  }
+  .form-group input:focus,
+  .form-group select:focus,
+  .form-group textarea:focus {
+    border-color:var(--caffe);
+    background:#fff;
+  }
+  .form-group textarea { resize:vertical; min-height:90px; }
+
+  .booking-submit {
+    width:100%;
+    padding:1rem;
+    background:var(--caffe);
+    color:#fff;
+    border:none;
+    border-radius:3rem;
+    font-size:.9rem;
+    letter-spacing:.1em;
+    text-transform:uppercase;
+    font-weight:700;
+    cursor:pointer;
+    transition:.25s;
+    margin-top:.5rem;
+  }
+  .booking-submit:hover { background:var(--noce); transform:translateY(-2px); box-shadow:0 8px 24px var(--ombra); }
+
+  .booking-note {
+    font-size:.78rem;
+    text-align:center;
+    opacity:.6;
+    margin-top:.8rem;
+    line-height:1.5;
+  }
+
+  /* Prezzi info */
+  .booking-info { }
+  .booking-info .bi-title {
+    font-family:'Cormorant Garamond',serif;
+    font-size:1.8rem;
+    color:var(--noce);
+    font-weight:300;
+    margin-bottom:1.5rem;
+  }
+
+  .price-card {
+    background:var(--crema);
+    border-radius:var(--r);
+    padding:1.5rem;
+    margin-bottom:1rem;
+    border-left:4px solid var(--caffe);
+  }
+  .price-card .pc-stagione {
+    font-size:.72rem;
+    letter-spacing:.15em;
+    text-transform:uppercase;
+    color:var(--caffe);
+    font-weight:700;
+    margin-bottom:.3rem;
+  }
+  .price-card .pc-prezzo {
+    font-family:'Cormorant Garamond',serif;
+    font-size:2rem;
+    color:var(--noce);
+    line-height:1;
+  }
+  .price-card .pc-prezzo span { font-size:1rem; opacity:.6; }
+  .price-card .pc-note {
+    font-size:.8rem;
+    opacity:.65;
+    margin-top:.3rem;
+    line-height:1.4;
+  }
+
+  .booking-contact-alt {
+    margin-top:1.5rem;
+    padding:1.2rem;
+    background:var(--rosa);
+    border-radius:var(--r);
+    text-align:center;
+  }
+  .booking-contact-alt p { font-size:.82rem; opacity:.8; margin-bottom:.8rem; }
+  .wa-btn {
+    display:inline-flex;
+    align-items:center;
+    gap:.6rem;
+    background:#25D366;
+    color:#fff;
+    padding:.7rem 1.6rem;
+    border-radius:2rem;
+    font-size:.82rem;
+    font-weight:700;
+    letter-spacing:.08em;
+    transition:.2s;
+  }
+  .wa-btn:hover { background:#128C7E; transform:translateY(-2px); }
+
+  /* Flatpickr theme override */
+  .flatpickr-calendar {
+    background:#fff !important;
+    border:1px solid var(--tufo) !important;
+    border-radius:.8rem !important;
+    box-shadow:0 12px 40px var(--ombra) !important;
+    font-family:'Lato',sans-serif !important;
+  }
+  .flatpickr-day.selected,
+  .flatpickr-day.startRange,
+  .flatpickr-day.endRange {
+    background:var(--caffe) !important;
+    border-color:var(--caffe) !important;
+  }
+  .flatpickr-day.inRange {
+    background:var(--crema) !important;
+    border-color:var(--crema) !important;
+    box-shadow:-5px 0 0 var(--crema), 5px 0 0 var(--crema) !important;
+  }
+  .flatpickr-months .flatpickr-month { background:var(--caffe) !important; border-radius:.8rem .8rem 0 0 !important; }
+  .flatpickr-current-month .flatpickr-monthDropdown-months,
+  .flatpickr-current-month .numInputWrapper { color:#fff !important; }
+  .flatpickr-weekday { color:var(--caffe) !important; font-weight:700; }
+  span.flatpickr-weekday { background:var(--crema) !important; }
+
+  /* ════════════════════════════════════════
+     SERVIZI
+  ════════════════════════════════════════ */
+  #services { background: var(--crema); }
+
+  .services-grid {
+    display:grid;
+    grid-template-columns:repeat(4,1fr);
+    gap:1.5rem;
+    margin-top:3rem;
+  }
+  .service-card {
+    background:#fff;
+    border-radius:var(--r);
+    padding:2rem 1.5rem;
+    text-align:center;
+    box-shadow:0 4px 20px var(--ombra);
+    transition:.3s;
+    border-bottom:3px solid transparent;
+  }
+  .service-card:hover { transform:translateY(-6px); border-bottom-color:var(--caffe); box-shadow:0 12px 40px var(--ombra); }
+  .service-card .s-icon { font-size:2.2rem; margin-bottom:1rem; }
+  .service-card h4 { font-size:1.1rem; color:var(--noce); margin-bottom:.5rem; font-weight:500; }
+  .service-card p { font-size:.82rem; opacity:.7; line-height:1.5; }
+
+  /* ════════════════════════════════════════
+     RECENSIONI
+  ════════════════════════════════════════ */
+  #reviews { background: var(--panna); }
+
+  .reviews-grid {
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:1.5rem;
+    margin-top:3rem;
+  }
+  .review-card {
+    background:#fff;
+    border-radius:var(--r);
+    padding:2rem;
+    box-shadow:0 4px 20px var(--ombra);
+    position:relative;
+  }
+  .review-stars { color:#F4C430; font-size:1.1rem; margin-bottom:1rem; }
+  .review-text { font-size:.9rem; line-height:1.7; opacity:.8; font-style:italic; margin-bottom:1.2rem; }
+  .review-author { font-size:.8rem; font-weight:700; color:var(--caffe); }
+  .review-card::before {
+    content:'"';
+    position:absolute;
+    top:-1rem; left:1.5rem;
+    font-family:'Cormorant Garamond',serif;
+    font-size:5rem;
+    color:var(--tufo);
+    line-height:1;
+    opacity:.5;
+  }
+
+  /* ════════════════════════════════════════
+     CONTATTI
+  ════════════════════════════════════════ */
+  #contact { background: var(--rosa); }
+
+  .contact-grid {
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:4rem;
+    align-items:start;
+  }
+
+  .contact-item {
+    display:flex;
+    align-items:flex-start;
+    gap:1rem;
+    margin-bottom:1.5rem;
+  }
+  .contact-item .c-icon {
+    font-size:1.5rem;
+    flex-shrink:0;
+    width:48px;
+    height:48px;
+    background:var(--caffe);
+    border-radius:50%;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    color:#fff;
+  }
+  .contact-item .c-info strong {
+    display:block;
+    font-size:.75rem;
+    letter-spacing:.12em;
+    text-transform:uppercase;
+    color:var(--caffe);
+    font-weight:700;
+    margin-bottom:.2rem;
+  }
+  .contact-item .c-info span,
+  .contact-item .c-info a {
+    font-size:.95rem;
+    color:var(--testo);
+    line-height:1.5;
+  }
+  .contact-item .c-info a:hover { color:var(--caffe); }
+
+  .contact-social { display:flex; gap:1rem; margin-top:2rem; }
+  .social-btn {
+    width:48px; height:48px;
+    border-radius:50%;
+    background:var(--caffe);
+    color:#fff;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:1.2rem;
+    transition:.2s;
+  }
+  .social-btn:hover { background:var(--noce); transform:translateY(-3px); }
+
+  .contact-form { }
+  .contact-form .booking-card { margin-top:0; }
+
+  /* ════════════════════════════════════════
+     FOOTER
+  ════════════════════════════════════════ */
+  footer {
+    background: var(--noce);
+    color: rgba(255,255,255,.7);
+    text-align:center;
+    padding:3rem 2rem;
+  }
+  footer .f-logo {
+    font-family:'Cormorant Garamond',serif;
+    font-size:2rem;
+    color:#fff;
+    letter-spacing:.15em;
+    margin-bottom:.5rem;
+  }
+  footer .f-logo em { font-style:italic; color:var(--tufo); }
+  footer p { font-size:.8rem; line-height:1.7; margin-top:.5rem; }
+  footer a { color:rgba(255,255,255,.5); transition:.2s; }
+  footer a:hover { color:#fff; }
+  footer .f-divider {
+    width:40px; height:1px;
+    background:rgba(255,255,255,.2);
+    margin:1.5rem auto;
+  }
+  footer .f-credits { font-size:.72rem; opacity:.45; margin-top:1.5rem; }
+
+  /* ════════════════════════════════════════
+     BACK TO TOP
+  ════════════════════════════════════════ */
+  .back-top {
+    position:fixed;
+    bottom:2rem; right:2rem;
+    width:50px; height:50px;
+    background:var(--caffe);
+    color:#fff;
+    border-radius:50%;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:1.3rem;
+    cursor:pointer;
+    opacity:0;
+    pointer-events:none;
+    transition:.3s;
+    z-index:999;
+    box-shadow:0 4px 16px var(--ombra);
+  }
+  .back-top.show { opacity:1; pointer-events:all; }
+  .back-top:hover { background:var(--noce); transform:translateY(-4px); }
+
+  /* ════════════════════════════════════════
+     TOAST
+  ════════════════════════════════════════ */
+  .toast {
+    position:fixed;
+    bottom:2rem; left:50%;
+    transform:translateX(-50%) translateY(100px);
+    background:var(--noce);
+    color:#fff;
+    padding:1rem 2rem;
+    border-radius:3rem;
+    font-size:.9rem;
+    font-weight:700;
+    box-shadow:0 8px 30px rgba(0,0,0,.3);
+    z-index:3000;
+    transition:.4s ease;
+    white-space:nowrap;
+  }
+  .toast.show { transform:translateX(-50%) translateY(0); }
+
+  /* ════════════════════════════════════════
+     RESPONSIVE
+  ════════════════════════════════════════ */
+  @media(max-width:900px) {
+    .nav-links { display:none; }
+    .nav-links.open { display:flex; flex-direction:column; position:fixed; top:60px; left:0; right:0; background:var(--panna); padding:2rem; gap:1.5rem; border-bottom:1px solid var(--tufo); box-shadow:0 8px 20px var(--ombra); }
+    .hamburger { display:flex; }
+
+    .about-grid { grid-template-columns:1fr; gap:2.5rem; }
+    .about-images { grid-template-rows:250px 150px; }
+
+    .gallery-grid {
+      grid-template-columns:1fr 1fr;
+      grid-template-rows:auto;
+    }
+    .gallery-grid .gallery-item:first-child { grid-row:1; grid-column:1; }
+
+    .booking-grid { grid-template-columns:1fr; gap:2.5rem; }
+    .location-grid { grid-template-columns:1fr; gap:2.5rem; }
+    .contact-grid { grid-template-columns:1fr; gap:2.5rem; }
+
+    .services-grid { grid-template-columns:1fr 1fr; }
+    .reviews-grid { grid-template-columns:1fr; }
+    .form-row { grid-template-columns:1fr; }
+
+    .strip { gap:1.5rem; }
+  }
+
+  @media(max-width:600px) {
+    nav { padding:.8rem 1.2rem; }
+    section { padding:4rem 1.2rem; }
+    .services-grid { grid-template-columns:1fr; }
+    .gallery-grid { grid-template-columns:1fr; grid-template-rows:auto; }
+    .gallery-item { height:240px; }
+    .about-features { grid-template-columns:1fr; }
+    .about-images { grid-template-columns:1fr; grid-template-rows:250px 200px 200px; }
+    .about-img:first-child { grid-row:1; grid-column:1; }
+    .hero-btns { flex-direction:column; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ═══ NAV ═══════════════════════════════════════════════════════ -->
+<nav id="navbar">
+  <a href="#hero" class="nav-logo">Dimora <em>Stella</em></a>
+  <ul class="nav-links" id="navLinks">
+    <li><a href="#about">La Dimora</a></li>
+    <li><a href="#gallery">Galleria</a></li>
+    <li><a href="#services">Servizi</a></li>
+    <li><a href="#location">Dove Siamo</a></li>
+    <li><a href="#reviews">Recensioni</a></li>
+    <li><a href="#booking" class="btn-prenota-nav">Prenota</a></li>
+  </ul>
+  <div class="hamburger" id="hamburger" onclick="toggleMenu()">
+    <span></span><span></span><span></span>
+  </div>
+</nav>
+
+<!-- ═══ HERO ════════════════════════════════════════════════════== -->
+<section id="hero">
+  <div class="hero-slider">
+    <div class="hero-slide active"></div>
+    <div class="hero-slide"></div>
+    <div class="hero-slide"></div>
+  </div>
+  <div class="hero-overlay"></div>
+  <div class="hero-content">
+    <p class="eyebrow">✦ B&B · Pezze di Greco · Puglia ✦</p>
+    <h1>Dimora <em>Stella</em></h1>
+    <p class="subtitle">Lamia a stella in tufo a faccia vista — nel cuore della Valle d'Itria</p>
+    <div class="hero-btns">
+      <a href="#booking" class="btn btn-primary">Prenota Ora</a>
+      <a href="#about" class="btn btn-outline">Scopri di più</a>
+    </div>
+  </div>
+  <div class="hero-dots">
+    <div class="hero-dot active" onclick="goSlide(0)"></div>
+    <div class="hero-dot" onclick="goSlide(1)"></div>
+    <div class="hero-dot" onclick="goSlide(2)"></div>
+  </div>
+</section>
+
+<!-- ═══ STRIP ═══════════════════════════════════════════════════= -->
+<div class="strip">
+  <div class="strip-item"><span class="icon">🏛️</span> Tufo a faccia vista</div>
+  <div class="strip-item"><span class="icon">⭐</span> Lamia a stella</div>
+  <div class="strip-item"><span class="icon">🌊</span> A pochi km dal mare</div>
+  <div class="strip-item"><span class="icon">🛁</span> Bagno privato di design</div>
+  <div class="strip-item"><span class="icon">☕</span> Colazione inclusa</div>
+</div>
+
+<!-- ═══ ABOUT ════════════════════════════════════════════════════ -->
+<section id="about">
+  <div class="container">
+    <div class="about-grid">
+      <div class="about-text">
+        <span class="section-label">La Dimora</span>
+        <h2 class="section-title">Un angolo di <em>Puglia autentica</em></h2>
+        <div class="section-divider"></div>
+        <p>Situata nel cuore di Pezze di Greco, la Dimora Stella è una splendida lamia a stella interamente costruita in tufo a faccia vista, pietra simbolo della tradizione architettonica pugliese. Un luogo dove il tempo rallenta e l'autenticità si respira in ogni dettaglio.</p>
+        <p>Gli interni richiamano il calore delle antiche masserie salentine: pavimenti in cementine policrome, archi in pietra calcarea, soffitti a stella. Un'oasi di pace e bellezza a pochi chilometri dal mare Adriatico e dalle bianche città della Valle d'Itria.</p>
+        <p>Ogni angolo della dimora racconta una storia fatta di pietra, silenzio e luce pugliese.</p>
+
+        <div class="about-features">
+          <div class="about-feature">
+            <span class="ico">🌿</span>
+            <div>
+              <strong>Posizione centrale</strong>
+              <span>Bar, lavanderia, tabacchino e fermata bus a 100 m</span>
+            </div>
+          </div>
+          <div class="about-feature">
+            <span class="ico">🏖️</span>
+            <div>
+              <strong>Vicino al mare</strong>
+              <span>Torre Canne e Savelletri raggiungibili facilmente</span>
+            </div>
+          </div>
+          <div class="about-feature">
+            <span class="ico">🏰</span>
+            <div>
+              <strong>Borghi storici</strong>
+              <span>Ostuni, Cisternino e Fasano a pochi minuti</span>
+            </div>
+          </div>
+          <div class="about-feature">
+            <span class="ico">🤫</span>
+            <div>
+              <strong>Silenzio & privacy</strong>
+              <span>Cortile privato, accesso indipendente</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="about-images">
+        <div class="about-img">
+          <img src="foto/foto5.jpg" alt="Soggiorno Dimora Stella" onerror="this.style.display='none'; this.parentElement.style.background='var(--tufo)'">
+        </div>
+        <div class="about-img">
+          <img src="foto/foto4.jpg" alt="Cucina" onerror="this.style.display='none'; this.parentElement.style.background='var(--crema)'">
+        </div>
+        <div class="about-img">
+          <img src="foto/foto1.jpg" alt="Interno" onerror="this.style.display='none'; this.parentElement.style.background='var(--rosa)'">
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ GALLERY ══════════════════════════════════════════════════ -->
+<section id="gallery">
+  <div class="container">
+    <div style="text-align:center; margin-bottom:3rem;">
+      <span class="section-label">Galleria</span>
+      <h2 class="section-title">La <em>bellezza</em> della dimora</h2>
+      <div class="section-divider" style="margin:0 auto;"></div>
+    </div>
+
+    <div class="gallery-grid">
+      <div class="gallery-item" onclick="openLightbox(0)">
+        <img src="foto/foto5.jpg" alt="Soggiorno con arco in tufo" onerror="this.src=''; this.parentElement.style.background='#c9a97a'">
+        <div class="gallery-overlay"><span>🔍</span></div>
+      </div>
+      <div class="gallery-item" onclick="openLightbox(1)">
+        <img src="foto/foto4.jpg" alt="Sala da pranzo con arco" onerror="this.src=''; this.parentElement.style.background='#d4b896'">
+        <div class="gallery-overlay"><span>🔍</span></div>
+      </div>
+      <div class="gallery-item" onclick="openLightbox(2)">
+        <img src="foto/foto1.jpg" alt="Soggiorno checkerboard" onerror="this.src=''; this.parentElement.style.background='#e2c99a'">
+        <div class="gallery-overlay"><span>🔍</span></div>
+      </div>
+      <div class="gallery-item" onclick="openLightbox(3)">
+        <img src="foto/foto2.jpg" alt="Bagno moderno" onerror="this.src=''; this.parentElement.style.background='#c9a97a'">
+        <div class="gallery-overlay"><span>🔍</span></div>
+      </div>
+      <div class="gallery-item" onclick="openLightbox(4)">
+        <img src="foto/foto3.jpg" alt="Bagno con vasca" onerror="this.src=''; this.parentElement.style.background='#d4b896'">
+        <div class="gallery-overlay"><span>🔍</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Lightbox -->
+<div class="lightbox" id="lightbox">
+  <span class="lb-close" onclick="closeLightbox()">✕</span>
+  <span class="lb-nav lb-prev" onclick="prevPhoto()">‹</span>
+  <img id="lb-img" src="" alt="">
+  <span class="lb-nav lb-next" onclick="nextPhoto()">›</span>
+</div>
+
+<!-- ═══ SERVIZI ══════════════════════════════════════════════════ -->
+<section id="services">
+  <div class="container">
+    <div style="text-align:center;">
+      <span class="section-label">Cosa offriamo</span>
+      <h2 class="section-title">Comfort e <em>autenticità</em></h2>
+      <div class="section-divider" style="margin:0 auto;"></div>
+    </div>
+
+    <div class="services-grid">
+      <div class="service-card">
+        <div class="s-icon">☕</div>
+        <h4>Colazione pugliese</h4>
+        <p>Pasticciotti, fruttone, caffè leccese e prodotti locali ogni mattina</p>
+      </div>
+      <div class="service-card">
+        <div class="s-icon">📶</div>
+        <h4>WiFi ultra-veloce</h4>
+        <p>Connessione fibra in tutta la dimora, perfetta anche per lo smart working</p>
+      </div>
+      <div class="service-card">
+        <div class="s-icon">❄️</div>
+        <h4>Aria condizionata</h4>
+        <p>Climatizzazione in ogni ambiente per il massimo comfort tutto l'anno</p>
+      </div>
+      <div class="service-card">
+        <div class="s-icon">🚗</div>
+        <h4>Parcheggio</h4>
+        <p>Posto auto riservato nelle vicinanze, incluso nel soggiorno</p>
+      </div>
+      <div class="service-card">
+        <div class="s-icon">🧹</div>
+        <h4>Pulizie quotidiane</h4>
+        <p>Cambio biancheria e riassetto giornaliero della dimora</p>
+      </div>
+      <div class="service-card">
+        <div class="s-icon">🗺️</div>
+        <h4>Concierge locale</h4>
+        <p>Consigli su ristoranti, escursioni e spiagge nascosti della Puglia</p>
+      </div>
+      <div class="service-card">
+        <div class="s-icon">🛁</div>
+        <h4>Bagno esclusivo</h4>
+        <p>Bagno privato con prodotti di cortesia e asciugamani di qualità</p>
+      </div>
+      <div class="service-card">
+        <div class="s-icon">🌿</div>
+        <h4>Check-in flessibile</h4>
+        <p>Accordiamo gli orari di arrivo e partenza alle vostre esigenze</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ LOCATION ═════════════════════════════════════════════════ -->
+<section id="location">
+  <div class="container">
+    <div class="location-grid">
+      <div>
+        <span class="section-label">Dove Siamo</span>
+        <h2 class="section-title">Nel cuore di <em>Pezze di Greco</em></h2>
+        <div class="section-divider"></div>
+        <p style="opacity:.8; line-height:1.7; margin-bottom:1.5rem;">Via Galiani, Pezze di Greco (BR) — Una posizione privilegiata che vi mette a portata di tutto ciò che la Puglia più bella ha da offrire.</p>
+
+        <ul class="location-list">
+          <li>
+            <span class="loc-icon">🚌</span>
+            <div>
+              <strong>Fermata autobus</strong>
+              <div style="font-size:.82rem; opacity:.7;">Collegamento diretto per Ostuni, Fasano e Brindisi</div>
+            </div>
+            <span class="loc-dist">100 m</span>
+          </li>
+          <li>
+            <span class="loc-icon">☕</span>
+            <div>
+              <strong>Bar, tabacchino, lavanderia</strong>
+              <div style="font-size:.82rem; opacity:.7;">Tutti i servizi di quartiere a due passi</div>
+            </div>
+            <span class="loc-dist">100 m</span>
+          </li>
+          <li>
+            <span class="loc-icon">🌊</span>
+            <div>
+              <strong>Torre Canne & Savelletri</strong>
+              <div style="font-size:.82rem; opacity:.7;">Le spiagge più belle dell'Adriatico pugliese</div>
+            </div>
+            <span class="loc-dist">~10 km</span>
+          </li>
+          <li>
+            <span class="loc-icon">⚪</span>
+            <div>
+              <strong>Ostuni — La Città Bianca</strong>
+              <div style="font-size:.82rem; opacity:.7;">Centro storico UNESCO a picco sul mare</div>
+            </div>
+            <span class="loc-dist">~12 km</span>
+          </li>
+          <li>
+            <span class="loc-icon">🏘️</span>
+            <div>
+              <strong>Cisternino</strong>
+              <div style="font-size:.82rem; opacity:.7;">Borgo medievale tra i più belli d'Italia</div>
+            </div>
+            <span class="loc-dist">~15 km</span>
+          </li>
+          <li>
+            <span class="loc-icon">🦋</span>
+            <div>
+              <strong>Fasano & Zoo Safari</strong>
+              <div style="font-size:.82rem; opacity:.7;">Città barocca e attrazione turistica</div>
+            </div>
+            <span class="loc-dist">~15 km</span>
+          </li>
+          <li>
+            <span class="loc-icon">✈️</span>
+            <div>
+              <strong>Aeroporto di Brindisi</strong>
+              <div style="font-size:.82rem; opacity:.7;">Collegamento con tutta Europa</div>
+            </div>
+            <span class="loc-dist">~25 km</span>
+          </li>
+        </ul>
+      </div>
+
+      <div>
+        <div class="map-box">
+          <div class="map-placeholder">
+            <span class="map-ico">📍</span>
+            <p>Via Galiani, Pezze di Greco (BR)</p>
+            <a href="https://maps.google.com/?q=Pezze+di+Greco+Via+Galiani+Fasano+BR" target="_blank" class="map-open-btn">Apri in Google Maps</a>
+          </div>
+        </div>
+        <p style="font-size:.75rem; opacity:.6; margin-top:.8rem; text-align:center; letter-spacing:.05em;">Indirizzo esatto comunicato alla conferma prenotazione</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ BOOKING ══════════════════════════════════════════════════ -->
+<section id="booking">
+  <div class="container">
+    <div style="text-align:center; margin-bottom:3.5rem;">
+      <span class="section-label">Disponibilità</span>
+      <h2 class="section-title">Prenota la tua <em>permanenza</em></h2>
+      <div class="section-divider" style="margin:0 auto;"></div>
+    </div>
+
+    <div class="booking-grid">
+      <div class="booking-card">
+        <h3>Richiesta di prenotazione</h3>
+        <p class="bc-sub">Compila il modulo — risponderemo entro 24 ore</p>
+
+        <form id="bookingForm" onsubmit="submitBooking(event)">
+          <div class="form-row">
+            <div class="form-group">
+              <label>Nome</label>
+              <input type="text" id="nome" placeholder="Mario" required>
+            </div>
+            <div class="form-group">
+              <label>Cognome</label>
+              <input type="text" id="cognome" placeholder="Rossi" required>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label>Email</label>
+            <input type="email" id="email" placeholder="mario.rossi@email.it" required>
+          </div>
+
+          <div class="form-group">
+            <label>Telefono (WhatsApp)</label>
+            <input type="tel" id="telefono" placeholder="+39 333 000 0000">
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label>Check-in</label>
+              <input type="text" id="checkin" placeholder="Seleziona data" readonly required>
+            </div>
+            <div class="form-group">
+              <label>Check-out</label>
+              <input type="text" id="checkout" placeholder="Seleziona data" readonly required>
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label>Ospiti</label>
+              <select id="ospiti">
+                <option value="1">1 ospite</option>
+                <option value="2" selected>2 ospiti</option>
+                <option value="3">3 ospiti</option>
+                <option value="4">4 ospiti</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label>Come ci hai trovato?</label>
+              <select id="provenienza">
+                <option>Google</option>
+                <option>Booking.com</option>
+                <option>Airbnb</option>
+                <option>Passaparola</option>
+                <option>Instagram</option>
+                <option>Altro</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label>Note o richieste speciali</label>
+            <textarea id="note" placeholder="Allergie, orario di arrivo, culla per bambini..."></textarea>
+          </div>
+
+          <button type="submit" class="booking-submit">✦ Invia Richiesta di Prenotazione</button>
+          <p class="booking-note">La prenotazione sarà confermata dopo verifica disponibilità.<br>Nessun addebito fino alla conferma.</p>
+        </form>
+      </div>
+
+      <div class="booking-info">
+        <h3 class="bi-title">Tariffe <em>stagionali</em></h3>
+
+        <div class="price-card">
+          <div class="pc-stagione">🌸 Bassa stagione · Ott – Apr</div>
+          <div class="pc-prezzo">€ 80 <span>/ notte</span></div>
+          <div class="pc-note">Colazione inclusa · Min. 2 notti</div>
+        </div>
+
+        <div class="price-card">
+          <div class="pc-stagione">☀️ Media stagione · Mag – Giu · Set</div>
+          <div class="pc-prezzo">€ 110 <span>/ notte</span></div>
+          <div class="pc-note">Colazione inclusa · Min. 2 notti</div>
+        </div>
+
+        <div class="price-card">
+          <div class="pc-stagione">🌊 Alta stagione · Lug – Ago</div>
+          <div class="pc-prezzo">€ 140 <span>/ notte</span></div>
+          <div class="pc-note">Colazione inclusa · Min. 3 notti</div>
+        </div>
+
+        <div class="price-card" style="border-left-color:var(--tufo);">
+          <div class="pc-stagione">🎄 Festività & Capodanno</div>
+          <div class="pc-prezzo">€ 160 <span>/ notte</span></div>
+          <div class="pc-note">Colazione inclusa · Min. 3 notti</div>
+        </div>
+
+        <div class="booking-contact-alt">
+          <p>Preferisci prenotare direttamente su WhatsApp?</p>
+          <a href="https://wa.me/393XXXXXXXXX?text=Ciao!%20Vorrei%20prenotare%20Dimora%20Stella%20a%20Pezze%20di%20Greco" target="_blank" class="wa-btn">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+            Scrivi su WhatsApp
+          </a>
+          <p style="margin-top:.8rem; font-size:.72rem;">Sostituisci il numero nel codice sorgente</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ RECENSIONI ════════════════════════════════════════════════ -->
+<section id="reviews">
+  <div class="container">
+    <div style="text-align:center; margin-bottom:3rem;">
+      <span class="section-label">Ospiti felici</span>
+      <h2 class="section-title">Le loro <em>parole</em></h2>
+      <div class="section-divider" style="margin:0 auto;"></div>
+    </div>
+
+    <div class="reviews-grid">
+      <div class="review-card">
+        <div class="review-stars">★★★★★</div>
+        <p class="review-text">Un luogo magico. La pietra tufo, la luce del mattino che filtra attraverso le imposte, la colazione pugliese: è impossibile non innamorarsi di questa dimora.</p>
+        <div class="review-author">— Francesca & Marco, Milano</div>
+      </div>
+      <div class="review-card">
+        <div class="review-stars">★★★★★</div>
+        <p class="review-text">Posizione perfetta per esplorare la Valle d'Itria. In 20 minuti eravamo ad Ostuni, in 10 al mare. L'accoglienza calorosa è stata la ciliegina sulla torta.</p>
+        <div class="review-author">— Andreas & Lena, Monaco di Baviera</div>
+      </div>
+      <div class="review-card">
+        <div class="review-stars">★★★★★</div>
+        <p class="review-text">Architettura pugliese autentica con ogni comfort moderno. Il bagno di design è stupendo. Torneremo sicuramente l'estate prossima!</p>
+        <div class="review-author">— Sophia, Parigi</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ CONTATTI ══════════════════════════════════════════════════ -->
+<section id="contact">
+  <div class="container">
+    <div class="contact-grid">
+      <div>
+        <span class="section-label">Contattaci</span>
+        <h2 class="section-title">Siamo <em>qui</em> per te</h2>
+        <div class="section-divider"></div>
+
+        <div class="contact-item">
+          <div class="c-icon">📍</div>
+          <div class="c-info">
+            <strong>Indirizzo</strong>
+            <span>Via Galiani, Pezze di Greco (BR), Puglia</span>
+          </div>
+        </div>
+
+        <div class="contact-item">
+          <div class="c-icon">📞</div>
+          <div class="c-info">
+            <strong>Telefono / WhatsApp</strong>
+            <a href="tel:+393XXXXXXXXX">+39 3XX XXX XXXX</a>
+          </div>
+        </div>
+
+        <div class="contact-item">
+          <div class="c-icon">✉️</div>
+          <div class="c-info">
+            <strong>Email</strong>
+            <a href="mailto:info@dimorastella.it">info@dimorastella.it</a>
+          </div>
+        </div>
+
+        <div class="contact-item">
+          <div class="c-icon">🕐</div>
+          <div class="c-info">
+            <strong>Check-in / Check-out</strong>
+            <span>Check-in: 15:00 – 20:00<br>Check-out: entro le 11:00</span>
+          </div>
+        </div>
+
+        <div class="contact-social">
+          <a href="#" class="social-btn" title="Instagram">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z"/></svg>
+          </a>
+          <a href="#" class="social-btn" title="Facebook">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
+          </a>
+        </div>
+      </div>
+
+      <div>
+        <div class="booking-card">
+          <h3>Invia un messaggio</h3>
+          <p class="bc-sub">Per informazioni generali o domande</p>
+
+          <form id="contactForm" onsubmit="submitContact(event)">
+            <div class="form-group">
+              <label>Nome e cognome</label>
+              <input type="text" id="c-nome" placeholder="Mario Rossi" required>
+            </div>
+            <div class="form-group">
+              <label>Email</label>
+              <input type="email" id="c-email" placeholder="mario@email.it" required>
+            </div>
+            <div class="form-group">
+              <label>Messaggio</label>
+              <textarea id="c-msg" placeholder="La tua domanda..." style="min-height:130px;" required></textarea>
+            </div>
+            <button type="submit" class="booking-submit">Invia Messaggio</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ FOOTER ════════════════════════════════════════════════════ -->
+<footer>
+  <div class="f-logo">Dimora <em>Stella</em></div>
+  <p>Via Galiani · Pezze di Greco (BR) · Puglia · Italia</p>
+  <p><a href="tel:+393XXXXXXXXX">+39 3XX XXX XXXX</a> · <a href="mailto:info@dimorastella.it">info@dimorastella.it</a></p>
+  <div class="f-divider"></div>
+  <p>
+    <a href="#about">La Dimora</a> &nbsp;·&nbsp;
+    <a href="#gallery">Galleria</a> &nbsp;·&nbsp;
+    <a href="#booking">Prenota</a> &nbsp;·&nbsp;
+    <a href="#contact">Contatti</a>
+  </p>
+  <p class="f-credits">© 2025 Dimora Stella · Tutti i diritti riservati · P.IVA 00000000000</p>
+</footer>
+
+<!-- Back to top -->
+<div class="back-top" id="backTop" onclick="window.scrollTo({top:0,behavior:'smooth'})">↑</div>
+
+<!-- Toast -->
+<div class="toast" id="toast"></div>
+
+<!-- ═══ JAVASCRIPT ════════════════════════════════════════════════ -->
+<script>
+/* ── HERO SLIDER ─────────────────────────────────────────────── */
+let currentSlide = 0;
+const slides = document.querySelectorAll('.hero-slide');
+const dots = document.querySelectorAll('.hero-dot');
+
+function goSlide(n) {
+  slides[currentSlide].classList.remove('active');
+  dots[currentSlide].classList.remove('active');
+  currentSlide = n;
+  slides[currentSlide].classList.add('active');
+  dots[currentSlide].classList.add('active');
+}
+
+setInterval(() => goSlide((currentSlide + 1) % slides.length), 5000);
+
+/* ── NAV ─────────────────────────────────────────────────────── */
+window.addEventListener('scroll', () => {
+  document.getElementById('navbar').classList.toggle('scrolled', window.scrollY > 60);
+  document.getElementById('backTop').classList.toggle('show', window.scrollY > 400);
+});
+
+function toggleMenu() {
+  document.getElementById('navLinks').classList.toggle('open');
+}
+document.querySelectorAll('#navLinks a').forEach(a => {
+  a.addEventListener('click', () => document.getElementById('navLinks').classList.remove('open'));
+});
+
+/* ── DATE PICKER ─────────────────────────────────────────────── */
+const today = new Date();
+const tomorrow = new Date(today); tomorrow.setDate(today.getDate() + 1);
+
+const checkinPicker = flatpickr('#checkin', {
+  locale: 'it',
+  dateFormat: 'd/m/Y',
+  minDate: 'today',
+  disableMobile: false,
+  onChange: (dates) => {
+    if (dates[0]) {
+      const minOut = new Date(dates[0]);
+      minOut.setDate(minOut.getDate() + 1);
+      checkoutPicker.set('minDate', minOut);
+      if (!checkoutPicker.selectedDates.length || checkoutPicker.selectedDates[0] <= dates[0]) {
+        checkoutPicker.setDate(minOut);
+      }
+    }
+  }
+});
+
+const checkoutPicker = flatpickr('#checkout', {
+  locale: 'it',
+  dateFormat: 'd/m/Y',
+  minDate: tomorrow,
+  disableMobile: false,
+});
+
+/* ── LIGHTBOX ────────────────────────────────────────────────── */
+const photos = [
+  'foto/foto5.jpg',
+  'foto/foto4.jpg',
+  'foto/foto1.jpg',
+  'foto/foto2.jpg',
+  'foto/foto3.jpg',
+];
+let lbIndex = 0;
+
+function openLightbox(i) {
+  lbIndex = i;
+  document.getElementById('lb-img').src = photos[i];
+  document.getElementById('lightbox').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+function closeLightbox() {
+  document.getElementById('lightbox').classList.remove('open');
+  document.body.style.overflow = '';
+}
+function prevPhoto() {
+  lbIndex = (lbIndex - 1 + photos.length) % photos.length;
+  document.getElementById('lb-img').src = photos[lbIndex];
+}
+function nextPhoto() {
+  lbIndex = (lbIndex + 1) % photos.length;
+  document.getElementById('lb-img').src = photos[lbIndex];
+}
+document.getElementById('lightbox').addEventListener('click', function(e) {
+  if (e.target === this) closeLightbox();
+});
+document.addEventListener('keydown', (e) => {
+  if (!document.getElementById('lightbox').classList.contains('open')) return;
+  if (e.key === 'Escape') closeLightbox();
+  if (e.key === 'ArrowLeft') prevPhoto();
+  if (e.key === 'ArrowRight') nextPhoto();
+});
+
+/* ── TOAST ───────────────────────────────────────────────────── */
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 4000);
+}
+
+/* ── BOOKING FORM ────────────────────────────────────────────── */
+function submitBooking(e) {
+  e.preventDefault();
+  const nome     = document.getElementById('nome').value;
+  const cognome  = document.getElementById('cognome').value;
+  const email    = document.getElementById('email').value;
+  const tel      = document.getElementById('telefono').value;
+  const checkin  = document.getElementById('checkin').value;
+  const checkout = document.getElementById('checkout').value;
+  const ospiti   = document.getElementById('ospiti').value;
+  const note     = document.getElementById('note').value;
+
+  const subject = encodeURIComponent(`Richiesta prenotazione – ${nome} ${cognome}`);
+  const body = encodeURIComponent(
+`Nuova richiesta di prenotazione per Dimora Stella
+
+Nome: ${nome} ${cognome}
+Email: ${email}
+Telefono: ${tel}
+Check-in: ${checkin}
+Check-out: ${checkout}
+Ospiti: ${ospiti}
+Note: ${note}
+
+--- Inviato dal sito dimorastella.it ---`
+  );
+
+  // Apre il client email dell'utente con i dati precompilati
+  window.location.href = `mailto:info@dimorastella.it?subject=${subject}&body=${body}`;
+
+  showToast('✓ Richiesta inviata! Risponderemo entro 24 ore.');
+  e.target.reset();
+}
+
+/* ── CONTACT FORM ────────────────────────────────────────────── */
+function submitContact(e) {
+  e.preventDefault();
+  const nome = document.getElementById('c-nome').value;
+  const email = document.getElementById('c-email').value;
+  const msg   = document.getElementById('c-msg').value;
+
+  const subject = encodeURIComponent(`Messaggio da ${nome} – Dimora Stella`);
+  const body    = encodeURIComponent(`Nome: ${nome}\nEmail: ${email}\n\n${msg}`);
+  window.location.href = `mailto:info@dimorastella.it?subject=${subject}&body=${body}`;
+
+  showToast('✓ Messaggio inviato! Ti risponderemo presto.');
+  e.target.reset();
+}
+
+/* ── SMOOTH SCROLL OFFSET ────────────────────────────────────── */
+document.querySelectorAll('a[href^="#"]').forEach(a => {
+  a.addEventListener('click', function(e) {
+    const target = document.querySelector(this.getAttribute('href'));
+    if (!target) return;
+    e.preventDefault();
+    const offset = 80;
+    window.scrollTo({ top: target.offsetTop - offset, behavior: 'smooth' });
+  });
+});
+
+/* ── ENTRANCE ANIMATIONS ─────────────────────────────────────── */
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      entry.target.style.opacity = '1';
+      entry.target.style.transform = 'translateY(0)';
+    }
+  });
+}, { threshold: 0.1 });
+
+document.querySelectorAll('.service-card, .review-card, .price-card, .about-feature').forEach(el => {
+  el.style.opacity = '0';
+  el.style.transform = 'translateY(30px)';
+  el.style.transition = 'opacity .6s ease, transform .6s ease';
+  observer.observe(el);
+});
+</script>
+</body>
+</html>
