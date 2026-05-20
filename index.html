@@ -1446,8 +1446,32 @@
 <!-- Toast -->
 <div class="toast" id="toast"></div>
 
+<!-- Firebase SDK -->
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
+
 <!-- ═══ JAVASCRIPT ════════════════════════════════════════════════ -->
 <script>
+/* ── FIREBASE ────────────────────────────────────────────────── */
+// Stesse credenziali di gestionale.html — configura entrambi i file
+const FIREBASE_CONFIG_SITO = {
+  apiKey:            "INSERISCI_LA_TUA_API_KEY",
+  authDomain:        "INSERISCI_IL_PROGETTO.firebaseapp.com",
+  projectId:         "INSERISCI_IL_PROJECT_ID",
+  storageBucket:     "INSERISCI_IL_PROGETTO.appspot.com",
+  messagingSenderId: "INSERISCI_IL_SENDER_ID",
+  appId:             "INSERISCI_L_APP_ID"
+};
+let db_sito = null;
+let disabledRanges = [];
+const FB_OK = FIREBASE_CONFIG_SITO.apiKey !== "INSERISCI_LA_TUA_API_KEY";
+if (FB_OK) {
+  try {
+    firebase.initializeApp(FIREBASE_CONFIG_SITO);
+    db_sito = firebase.firestore();
+  } catch(e) { console.warn('Firebase:', e.message); }
+}
+
 /* ── HERO SLIDER ─────────────────────────────────────────────── */
 let currentSlide = 0;
 const slides = document.querySelectorAll('.hero-slide');
@@ -1553,35 +1577,80 @@ function showToast(msg) {
 /* ── BOOKING FORM ────────────────────────────────────────────── */
 function submitBooking(e) {
   e.preventDefault();
-  const nome     = document.getElementById('nome').value;
-  const cognome  = document.getElementById('cognome').value;
-  const email    = document.getElementById('email').value;
-  const tel      = document.getElementById('telefono').value;
-  const checkin  = document.getElementById('checkin').value;
-  const checkout = document.getElementById('checkout').value;
-  const ospiti   = document.getElementById('ospiti').value;
-  const note     = document.getElementById('note').value;
+  const nome      = document.getElementById('nome').value.trim();
+  const cognome   = document.getElementById('cognome').value.trim();
+  const email     = document.getElementById('email').value.trim();
+  const tel       = document.getElementById('telefono').value.trim();
+  const checkinD  = checkinPicker.selectedDates[0];
+  const checkoutD = checkoutPicker.selectedDates[0];
+  const ospiti    = document.getElementById('ospiti').value;
+  const provenienza = document.getElementById('provenienza').value;
+  const note      = document.getElementById('note').value.trim();
 
-  const subject = encodeURIComponent(`Richiesta prenotazione – ${nome} ${cognome}`);
-  const body = encodeURIComponent(
-`Nuova richiesta di prenotazione per Dimora Stella
+  if (!checkinD || !checkoutD) {
+    showToast('Seleziona le date di check-in e check-out.');
+    return;
+  }
 
-Nome: ${nome} ${cognome}
-Email: ${email}
-Telefono: ${tel}
-Check-in: ${checkin}
-Check-out: ${checkout}
-Ospiti: ${ospiti}
-Note: ${note}
+  const toISO = d => d.toISOString().split('T')[0];
+  const checkin  = toISO(checkinD);
+  const checkout = toISO(checkoutD);
 
---- Inviato dal sito dimorastella.it ---`
-  );
+  if (!db_sito) {
+    // Fallback mailto se Firebase non configurato
+    const subject = encodeURIComponent(`Richiesta prenotazione – ${nome} ${cognome}`);
+    const body = encodeURIComponent(
+`Nuova richiesta – Dimora Stella\n\nNome: ${nome} ${cognome}\nEmail: ${email}\nTelefono: ${tel}\nCheck-in: ${document.getElementById('checkin').value}\nCheck-out: ${document.getElementById('checkout').value}\nOspiti: ${ospiti}\nNote: ${note}\n\n--- dimorastella.it ---`
+    );
+    window.location.href = `mailto:info@dimorastella.it?subject=${subject}&body=${body}`;
+    showToast('✓ Richiesta inviata! Risponderemo entro 24 ore.');
+    e.target.reset();
+    return;
+  }
 
-  // Apre il client email dell'utente con i dati precompilati
-  window.location.href = `mailto:info@dimorastella.it?subject=${subject}&body=${body}`;
+  const btn = e.target.querySelector('button[type=submit]');
+  btn.disabled = true;
+  btn.textContent = 'Invio in corso...';
 
-  showToast('✓ Richiesta inviata! Risponderemo entro 24 ore.');
-  e.target.reset();
+  db_sito.collection('prenotazioni').add({
+    nome, cognome, email, telefono: tel,
+    checkin, checkout,
+    ospiti: parseInt(ospiti),
+    provenienza, note,
+    stato: 'in_attesa',
+    timestamp: firebase.firestore.FieldValue.serverTimestamp()
+  }).then(() => {
+    showToast('✓ Richiesta inviata! Risponderemo entro 24 ore.');
+    e.target.reset();
+    btn.disabled = false;
+    btn.textContent = '✦ Invia Richiesta di Prenotazione';
+  }).catch(err => {
+    console.error(err);
+    showToast('Errore nell\'invio. Contattaci su WhatsApp.');
+    btn.disabled = false;
+    btn.textContent = '✦ Invia Richiesta di Prenotazione';
+  });
+}
+
+/* ── DATE DISABILITATE DA PRENOTAZIONI CONFERMATE ────────────── */
+function loadDisabledDates() {
+  if (!db_sito) return;
+  db_sito.collection('prenotazioni')
+    .where('stato', 'in', ['confermata', 'bloccata'])
+    .get()
+    .then(snap => {
+      disabledRanges = snap.docs.map(d => {
+        const { checkin, checkout } = d.data();
+        return { from: checkin, to: checkout };
+      });
+      const disableFn = date => {
+        const ds = date.toISOString().split('T')[0];
+        return disabledRanges.some(r => ds >= r.from && ds < r.to);
+      };
+      checkinPicker.set('disable', [disableFn]);
+      checkoutPicker.set('disable', [disableFn]);
+    })
+    .catch(err => console.warn('loadDisabledDates:', err));
 }
 
 /* ── CONTACT FORM ────────────────────────────────────────────── */
@@ -1626,6 +1695,9 @@ document.querySelectorAll('.service-card, .review-card, .price-card, .about-feat
   el.style.transition = 'opacity .6s ease, transform .6s ease';
   observer.observe(el);
 });
+
+// Carica date disabilitate da prenotazioni confermate
+if (FB_OK && db_sito) loadDisabledDates();
 </script>
 </body>
 </html>
