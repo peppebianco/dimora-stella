@@ -240,26 +240,31 @@ h1,h2,h3,h4,h5{font-family:'Cormorant Garamond',serif}
 .chart-wrap.tall{height:230px}
 
 /* ══════════════════════════════════════ NUOVA FORM ══ */
-.nuova-wrap{max-width:720px}
-.form-card{background:#fff;border-radius:1.5rem;box-shadow:0 4px 32px rgba(107,63,28,.1),0 1px 8px rgba(107,63,28,.05);overflow:hidden;margin-bottom:1rem}
-.form-card-header{background:linear-gradient(135deg,var(--noce) 0%,var(--caffe) 100%);padding:2rem 2.2rem 1.8rem}
-.form-card-header h3{font-family:'Cormorant Garamond',serif;font-size:1.8rem;color:#fff;font-weight:400;margin:0;letter-spacing:.01em}
-.form-card-header p{font-size:.68rem;letter-spacing:.18em;text-transform:uppercase;color:rgba(253,246,236,.55);margin-top:.35rem}
-.form-card-body{padding:2rem 2.2rem 2.2rem}
-.form-section{margin-bottom:1.8rem}
-.form-section:last-of-type{margin-bottom:1.2rem}
-.form-section-title{display:flex;align-items:center;gap:.5rem;font-size:.67rem;font-weight:700;text-transform:uppercase;letter-spacing:.12em;color:var(--caffe);margin-bottom:1.1rem;padding-bottom:.55rem;border-bottom:1px solid rgba(226,201,154,.55)}
-.form-section-title .fs-icon{font-size:.95rem}
-.form-row-g{display:grid;grid-template-columns:1fr 1fr;gap:1.2rem}
+.nuova-wrap{max-width:100%;height:calc(100vh - 115px);display:flex;flex-direction:column}
+.form-card{flex:1;min-height:0;background:#fff;border-radius:1.5rem;box-shadow:0 4px 32px rgba(107,63,28,.1),0 1px 8px rgba(107,63,28,.05);overflow:hidden;display:flex;flex-direction:column}
+.form-card-header{flex-shrink:0;background:linear-gradient(135deg,var(--noce) 0%,var(--caffe) 100%);padding:.85rem 2rem;display:flex;align-items:center;justify-content:space-between}
+.form-card-header h3{font-family:'Cormorant Garamond',serif;font-size:1.45rem;color:#fff;font-weight:400;margin:0;letter-spacing:.01em}
+.form-card-header p{font-size:.63rem;letter-spacing:.18em;text-transform:uppercase;color:rgba(253,246,236,.5);margin:0}
+.form-card-body{flex:1;min-height:0;overflow:hidden;padding:1.3rem 2rem 1.3rem;display:flex;flex-direction:column}
+#nuovaForm{flex:1;min-height:0;display:flex;flex-direction:column;gap:.85rem}
+.form-sections-grid{flex:1;min-height:0;display:grid;grid-template-columns:1fr 1fr;gap:2.2rem}
+.form-col{display:flex;flex-direction:column;gap:.85rem;min-height:0}
+.form-col .form-section{flex-shrink:0}
+.form-col .form-section.grow{flex:1;display:flex;flex-direction:column;min-height:0}
+.form-col .form-section.grow .grow-field{flex:1;display:flex;flex-direction:column;min-height:0}
+.form-col .form-section.grow .grow-field textarea{flex:1;height:auto;min-height:48px;resize:none}
+.form-section{margin-bottom:0}
+.form-section-title{display:flex;align-items:center;gap:.45rem;font-size:.65rem;font-weight:700;text-transform:uppercase;letter-spacing:.12em;color:var(--caffe);margin-bottom:.75rem;padding-bottom:.45rem;border-bottom:1px solid rgba(226,201,154,.55)}
+.form-section-title .fs-icon{font-size:.88rem}
+.form-row-g{display:grid;grid-template-columns:1fr 1fr;gap:.9rem}
 .form-group-g{margin-bottom:0}
-.form-group-g+.form-group-g,.form-row-g+.form-row-g,.form-row-g+.form-group-g{margin-top:1.1rem}
-.form-group-g label{display:block;font-size:.67rem;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--caffe);margin-bottom:.4rem}
-.form-group-g input,.form-group-g select,.form-group-g textarea{width:100%;padding:.74rem 1rem;border:1.5px solid rgba(226,201,154,.7);border-radius:.7rem;font-size:.88rem;font-family:inherit;background:#FDFAF5;color:var(--testo);outline:none;transition:all .2s;box-shadow:0 1px 4px rgba(107,63,28,.04)}
+.form-row-g+.form-row-g,.form-row-g+.form-group-g,.form-group-g+.form-group-g{margin-top:.75rem}
+.form-group-g label{display:block;font-size:.64rem;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--caffe);margin-bottom:.3rem}
+.form-group-g input,.form-group-g select,.form-group-g textarea{width:100%;padding:.6rem .9rem;border:1.5px solid rgba(226,201,154,.7);border-radius:.65rem;font-size:.86rem;font-family:inherit;background:#FDFAF5;color:var(--testo);outline:none;transition:all .2s;box-shadow:0 1px 4px rgba(107,63,28,.04)}
 .form-group-g input:focus,.form-group-g select:focus,.form-group-g textarea:focus{border-color:var(--caffe);background:#fff;box-shadow:0 0 0 3px rgba(155,110,62,.13),0 2px 8px rgba(107,63,28,.07)}
-.form-group-g input::placeholder,.form-group-g textarea::placeholder{color:rgba(74,46,16,.32)}
+.form-group-g input::placeholder,.form-group-g textarea::placeholder{color:rgba(74,46,16,.3)}
 .form-group-g select{cursor:pointer}
-.form-group-g textarea{height:90px;resize:vertical}
-.submit-nuova{width:100%;padding:1rem;background:linear-gradient(135deg,var(--caffe) 0%,var(--noce) 100%);color:#fff;border:none;border-radius:1rem;font-family:inherit;font-weight:700;font-size:.88rem;letter-spacing:.12em;text-transform:uppercase;cursor:pointer;transition:all .22s;box-shadow:0 4px 20px rgba(155,110,62,.38)}
+.submit-nuova{flex-shrink:0;width:100%;padding:.78rem;background:linear-gradient(135deg,var(--caffe) 0%,var(--noce) 100%);color:#fff;border:none;border-radius:.9rem;font-family:inherit;font-weight:700;font-size:.85rem;letter-spacing:.12em;text-transform:uppercase;cursor:pointer;transition:all .22s;box-shadow:0 4px 20px rgba(155,110,62,.38)}
 .submit-nuova:hover{background:linear-gradient(135deg,var(--noce) 0%,#4A1E06 100%);box-shadow:0 6px 28px rgba(107,63,28,.48);transform:translateY(-1px)}
 .submit-nuova:active{transform:translateY(0)}
 .submit-nuova:disabled{opacity:.6;cursor:not-allowed;transform:none}
@@ -316,8 +321,13 @@ h1,h2,h3,h4,h5{font-family:'Cormorant Garamond',serif}
   .stats-grid{grid-template-columns:1fr 1fr}
   .form-row-g{grid-template-columns:1fr}
   .modal-grid{grid-template-columns:1fr}
-  .form-card-body{padding:1.4rem 1.2rem 1.6rem}
-  .form-card-header{padding:1.5rem 1.2rem 1.2rem}
+  .form-card-body{padding:1rem 1.1rem 1.2rem}
+  .form-card-header{padding:.8rem 1.1rem;flex-direction:column;align-items:flex-start;gap:.15rem}
+  .nuova-wrap{height:auto}
+  .form-sections-grid{grid-template-columns:1fr;overflow-y:visible}
+  #nuovaForm{overflow-y:auto}
+  .form-col .form-section.grow{flex:none}
+  .form-col .form-section.grow .grow-field textarea{height:100px;resize:vertical}
 }
 @media(max-width:480px){
   .stats-grid{grid-template-columns:1fr 1fr}
@@ -555,60 +565,67 @@ h1,h2,h3,h4,h5{font-family:'Cormorant Garamond',serif}
             </div>
             <div class="form-card-body">
               <form id="nuovaForm" onsubmit="submitNuova(event)">
+                <div class="form-sections-grid">
 
-                <div class="form-section">
-                  <div class="form-section-title"><span class="fs-icon">👤</span> Informazioni ospite</div>
-                  <div class="form-row-g">
-                    <div class="form-group-g"><label>Nome</label><input type="text" id="n-nome" placeholder="Mario" required></div>
-                    <div class="form-group-g"><label>Cognome</label><input type="text" id="n-cognome" placeholder="Rossi" required></div>
+                  <!-- COLONNA SINISTRA: Ospite + Soggiorno -->
+                  <div class="form-col">
+                    <div class="form-section">
+                      <div class="form-section-title"><span class="fs-icon">👤</span> Informazioni ospite</div>
+                      <div class="form-row-g">
+                        <div class="form-group-g"><label>Nome</label><input type="text" id="n-nome" placeholder="Mario" required></div>
+                        <div class="form-group-g"><label>Cognome</label><input type="text" id="n-cognome" placeholder="Rossi" required></div>
+                      </div>
+                      <div class="form-row-g">
+                        <div class="form-group-g"><label>Email</label><input type="email" id="n-email" placeholder="mario@email.it"></div>
+                        <div class="form-group-g"><label>Telefono</label><input type="tel" id="n-telefono" placeholder="+39 333 000 0000"></div>
+                      </div>
+                    </div>
+                    <div class="form-section">
+                      <div class="form-section-title"><span class="fs-icon">📅</span> Soggiorno</div>
+                      <div class="form-row-g">
+                        <div class="form-group-g"><label>Check-in</label><input type="date" id="n-checkin" required></div>
+                        <div class="form-group-g"><label>Check-out</label><input type="date" id="n-checkout" required></div>
+                      </div>
+                    </div>
                   </div>
-                  <div class="form-row-g">
-                    <div class="form-group-g"><label>Email</label><input type="email" id="n-email" placeholder="mario@email.it"></div>
-                    <div class="form-group-g"><label>Telefono</label><input type="tel" id="n-telefono" placeholder="+39 333 000 0000"></div>
+
+                  <!-- COLONNA DESTRA: Dettagli + Note -->
+                  <div class="form-col">
+                    <div class="form-section grow">
+                      <div class="form-section-title"><span class="fs-icon">📋</span> Dettagli</div>
+                      <div class="form-row-g">
+                        <div class="form-group-g"><label>Ospiti</label>
+                          <select id="n-ospiti">
+                            <option value="1">1 ospite</option><option value="2" selected>2 ospiti</option>
+                            <option value="3">3 ospiti</option><option value="4">4 ospiti</option>
+                          </select>
+                        </div>
+                        <div class="form-group-g"><label>Stato</label>
+                          <select id="n-stato">
+                            <option value="in_attesa">In Attesa</option>
+                            <option value="confermata">Confermata</option>
+                            <option value="bloccata">Bloccata (uso personale)</option>
+                          </select>
+                        </div>
+                      </div>
+                      <div class="form-row-g">
+                        <div class="form-group-g"><label>Provenienza</label>
+                          <select id="n-provenienza">
+                            <option>Diretta</option><option>Google</option><option>Booking.com</option>
+                            <option>Airbnb</option><option>Passaparola</option><option>Instagram</option><option>Altro</option>
+                          </select>
+                        </div>
+                        <div class="form-group-g"><label>Prezzo/notte €</label>
+                          <input type="number" id="n-prezzo" placeholder="Auto — tariffe stagionali" min="0">
+                        </div>
+                      </div>
+                      <div class="form-group-g grow-field"><label>Note</label>
+                        <textarea id="n-note" placeholder="Richieste speciali, orario di arrivo, note interne..."></textarea>
+                      </div>
+                    </div>
                   </div>
+
                 </div>
-
-                <div class="form-section">
-                  <div class="form-section-title"><span class="fs-icon">📅</span> Soggiorno</div>
-                  <div class="form-row-g">
-                    <div class="form-group-g"><label>Check-in</label><input type="date" id="n-checkin" required></div>
-                    <div class="form-group-g"><label>Check-out</label><input type="date" id="n-checkout" required></div>
-                  </div>
-                </div>
-
-                <div class="form-section">
-                  <div class="form-section-title"><span class="fs-icon">📋</span> Dettagli</div>
-                  <div class="form-row-g">
-                    <div class="form-group-g"><label>Ospiti</label>
-                      <select id="n-ospiti">
-                        <option value="1">1 ospite</option><option value="2" selected>2 ospiti</option>
-                        <option value="3">3 ospiti</option><option value="4">4 ospiti</option>
-                      </select>
-                    </div>
-                    <div class="form-group-g"><label>Stato</label>
-                      <select id="n-stato">
-                        <option value="in_attesa">In Attesa</option>
-                        <option value="confermata">Confermata</option>
-                        <option value="bloccata">Bloccata (uso personale)</option>
-                      </select>
-                    </div>
-                  </div>
-                  <div class="form-row-g">
-                    <div class="form-group-g"><label>Provenienza</label>
-                      <select id="n-provenienza">
-                        <option>Diretta</option><option>Google</option><option>Booking.com</option>
-                        <option>Airbnb</option><option>Passaparola</option><option>Instagram</option><option>Altro</option>
-                      </select>
-                    </div>
-                    <div class="form-group-g"><label>Prezzo/notte € (opzionale)</label>
-                      <input type="number" id="n-prezzo" placeholder="Auto — tariffe stagionali" min="0">
-                    </div>
-                  </div>
-                  <div class="form-group-g"><label>Note</label>
-                    <textarea id="n-note" placeholder="Richieste speciali, orario di arrivo, note interne..."></textarea>
-                  </div>
-                </div>
-
                 <button type="submit" class="submit-nuova">Aggiungi Prenotazione</button>
               </form>
             </div>
