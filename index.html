@@ -578,6 +578,33 @@
 
   /* Prezzi info */
   .booking-info { }
+  .guests-toggle {
+    display:flex;
+    gap:.4rem;
+    margin-bottom:1.2rem;
+    background:var(--crema);
+    border-radius:3rem;
+    padding:.3rem;
+    width:fit-content;
+  }
+  .gtoggle-btn {
+    border:none;
+    background:transparent;
+    padding:.45rem 1.2rem;
+    border-radius:3rem;
+    font-family:'Lato',sans-serif;
+    font-size:.8rem;
+    font-weight:700;
+    letter-spacing:.08em;
+    text-transform:uppercase;
+    color:var(--testo);
+    cursor:pointer;
+    transition:.2s;
+  }
+  .gtoggle-btn.active {
+    background:var(--caffe);
+    color:#fff;
+  }
   .booking-info .bi-title {
     font-family:'Cormorant Garamond',serif;
     font-size:1.8rem;
@@ -1295,6 +1322,8 @@
               <select id="ospiti">
                 <option value="1">1 ospite</option>
                 <option value="2" selected>2 ospiti</option>
+                <option value="3">3 ospiti</option>
+                <option value="4">4 ospiti</option>
               </select>
             </div>
             <div class="form-group">
@@ -1323,28 +1352,33 @@
       <div class="booking-info">
         <h3 class="bi-title">Tariffe <em>stagionali</em></h3>
 
+        <div class="guests-toggle">
+          <button class="gtoggle-btn active" onclick="setGuests(2,this)">2 persone</button>
+          <button class="gtoggle-btn" onclick="setGuests(4,this)">4 persone</button>
+        </div>
+
         <div class="price-card">
           <div class="pc-stagione">🌸 Bassa stagione · Ott – Apr</div>
-          <div class="pc-prezzo">€ 80 <span>/ notte</span></div>
-          <div class="pc-note">Colazione inclusa </div>
+          <div class="pc-prezzo">€ <span class="pc-val" data-base="80">80</span> <span>/ notte</span></div>
+          <div class="pc-note">Colazione inclusa</div>
         </div>
 
         <div class="price-card">
           <div class="pc-stagione">☀️ Media stagione · Mag – Giu · Set</div>
-          <div class="pc-prezzo">€ 110 <span>/ notte</span></div>
-          <div class="pc-note">Colazione inclusa </div>
+          <div class="pc-prezzo">€ <span class="pc-val" data-base="110">110</span> <span>/ notte</span></div>
+          <div class="pc-note">Colazione inclusa</div>
         </div>
 
         <div class="price-card">
           <div class="pc-stagione">🌊 Alta stagione · Lug – Ago</div>
-          <div class="pc-prezzo">€ 140 <span>/ notte</span></div>
-          <div class="pc-note">Colazione inclusa </div>
+          <div class="pc-prezzo">€ <span class="pc-val" data-base="140">140</span> <span>/ notte</span></div>
+          <div class="pc-note">Colazione inclusa</div>
         </div>
 
         <div class="price-card" style="border-left-color:var(--tufo);">
           <div class="pc-stagione">🎄 Festività & Capodanno</div>
-          <div class="pc-prezzo">€ 160 <span>/ notte</span></div>
-          <div class="pc-note">Colazione inclusa </div>
+          <div class="pc-prezzo">€ <span class="pc-val" data-base="160">160</span> <span>/ notte</span></div>
+          <div class="pc-note">Colazione inclusa</div>
         </div>
 
         <div class="booking-contact-alt">
@@ -1674,6 +1708,16 @@ function loadDisabledDates() {
     .catch(err => console.warn('loadDisabledDates:', err));
 }
 
+
+/* ── TOGGLE OSPITI / PREZZI ──────────────────────────────────── */
+function setGuests(n, btn) {
+  document.querySelectorAll('.gtoggle-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  const mult = n === 4 ? 2 : 1;
+  document.querySelectorAll('.pc-val').forEach(el => {
+    el.textContent = el.dataset.base * mult;
+  });
+}
 
 /* ── SMOOTH SCROLL OFFSET ────────────────────────────────────── */
 document.querySelectorAll('a[href^="#"]').forEach(a => {
