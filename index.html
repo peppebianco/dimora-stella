@@ -913,14 +913,53 @@
 
   @media(max-width:600px) {
     nav { padding:.8rem 1.2rem; }
-    section { padding:4rem 1.2rem; }
-    .services-grid { grid-template-columns:1fr; }
-    .gallery-grid { grid-template-columns:1fr; grid-template-rows:auto; }
-    .gallery-item { height:240px; }
+    section { padding:3rem 1.2rem; }
+    .hero-btns { flex-direction:column; }
+
+    /* About */
     .about-features { grid-template-columns:1fr; }
     .about-images { grid-template-columns:1fr; grid-template-rows:250px 200px 200px; }
     .about-img:first-child { grid-row:1; grid-column:1; }
-    .hero-btns { flex-direction:column; }
+
+    /* Galleria — 2 colonne compatte */
+    .gallery-grid {
+      grid-template-columns:1fr 1fr;
+      grid-template-rows:auto;
+      gap:.5rem;
+    }
+    .gallery-item { height:150px; }
+    .gallery-grid .gallery-item:first-child { grid-row:1; grid-column:1; }
+
+    /* Servizi — 2 colonne compatte */
+    .services-grid {
+      grid-template-columns:1fr 1fr;
+      gap:.8rem;
+      margin-top:1.5rem;
+    }
+    .service-card { padding:1.2rem .8rem; }
+    .service-card .s-icon { font-size:1.6rem; margin-bottom:.5rem; }
+    .service-card h4 { font-size:.9rem; }
+    .service-card p { font-size:.75rem; }
+
+    /* Recensioni — carosello orizzontale */
+    .reviews-grid {
+      display:flex;
+      flex-wrap:nowrap;
+      overflow-x:auto;
+      scroll-snap-type:x mandatory;
+      -webkit-overflow-scrolling:touch;
+      gap:1rem;
+      margin-top:1.5rem;
+      padding-bottom:.8rem;
+    }
+    .review-card {
+      flex:0 0 85%;
+      scroll-snap-align:start;
+    }
+
+    /* Location — mappa ridotta, lista compatta */
+    .map-box { height:220px; }
+    .location-list li { padding:.6rem 0; font-size:.85rem; }
   }
 </style>
 </head>
