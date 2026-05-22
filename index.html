@@ -887,7 +887,6 @@
 
     .services-grid { grid-template-columns:1fr 1fr; }
     .reviews-grid { grid-template-columns:1fr; }
-    .form-row { grid-template-columns:1fr; }
 
     .strip { gap:1.5rem; }
   }
@@ -896,6 +895,19 @@
     nav { padding:.8rem 1.2rem; }
     section { padding:3rem 1.2rem; }
     .hero-btns { flex-direction:column; }
+
+    /* Form prenotazione — 2 colonne compatte */
+    .form-row { grid-template-columns:1fr 1fr; gap:.5rem; margin-bottom:.5rem; }
+    .form-group { margin-bottom:.5rem; gap:.2rem; }
+    .form-group label { font-size:.65rem; }
+    .form-group input,
+    .form-group select,
+    .form-group textarea { padding:.55rem .7rem; font-size:.82rem; }
+    .form-group textarea { min-height:70px; }
+    .booking-card { padding:1.4rem 1rem; }
+    .booking-card h3 { font-size:1.2rem; }
+    .booking-card .bc-sub { margin-bottom:1rem; }
+    .booking-submit { padding:.75rem; font-size:.78rem; }
 
     /* About */
     .about-features { grid-template-columns:1fr; }
@@ -1249,14 +1261,15 @@
             </div>
           </div>
 
-          <div class="form-group">
-            <label>Email</label>
-            <input type="email" id="email" placeholder="mario.rossi@email.it" required>
-          </div>
-
-          <div class="form-group">
-            <label>Telefono (WhatsApp)</label>
-            <input type="tel" id="telefono" placeholder="+39 333 000 0000">
+          <div class="form-row">
+            <div class="form-group">
+              <label>Email</label>
+              <input type="email" id="email" placeholder="mario.rossi@email.it" required>
+            </div>
+            <div class="form-group">
+              <label>Telefono</label>
+              <input type="tel" id="telefono" placeholder="+39 380 775 2931">
+            </div>
           </div>
 
           <div class="form-row">
