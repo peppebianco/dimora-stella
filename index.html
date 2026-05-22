@@ -1359,25 +1359,25 @@
 
         <div class="price-card">
           <div class="pc-stagione">🌸 Bassa stagione · Ott – Apr</div>
-          <div class="pc-prezzo">€ <span class="pc-val" data-base="80">80</span> <span>/ notte</span></div>
+          <div class="pc-prezzo">€ <span class="pc-val" data-base="80" data-4="150">80</span> <span>/ notte</span></div>
           <div class="pc-note">Colazione inclusa</div>
         </div>
 
         <div class="price-card">
           <div class="pc-stagione">☀️ Media stagione · Mag – Giu · Set</div>
-          <div class="pc-prezzo">€ <span class="pc-val" data-base="110">110</span> <span>/ notte</span></div>
+          <div class="pc-prezzo">€ <span class="pc-val" data-base="110" data-4="200">110</span> <span>/ notte</span></div>
           <div class="pc-note">Colazione inclusa</div>
         </div>
 
         <div class="price-card">
           <div class="pc-stagione">🌊 Alta stagione · Lug – Ago</div>
-          <div class="pc-prezzo">€ <span class="pc-val" data-base="140">140</span> <span>/ notte</span></div>
+          <div class="pc-prezzo">€ <span class="pc-val" data-base="140" data-4="260">140</span> <span>/ notte</span></div>
           <div class="pc-note">Colazione inclusa</div>
         </div>
 
         <div class="price-card" style="border-left-color:var(--tufo);">
           <div class="pc-stagione">🎄 Festività & Capodanno</div>
-          <div class="pc-prezzo">€ <span class="pc-val" data-base="160">160</span> <span>/ notte</span></div>
+          <div class="pc-prezzo">€ <span class="pc-val" data-base="160" data-4="300">160</span> <span>/ notte</span></div>
           <div class="pc-note">Colazione inclusa</div>
         </div>
 
@@ -1713,9 +1713,8 @@ function loadDisabledDates() {
 function setGuests(n, btn) {
   document.querySelectorAll('.gtoggle-btn').forEach(b => b.classList.remove('active'));
   btn.classList.add('active');
-  const mult = n === 4 ? 2 : 1;
   document.querySelectorAll('.pc-val').forEach(el => {
-    el.textContent = el.dataset.base * mult;
+    el.textContent = n === 4 ? el.dataset['4'] : el.dataset.base;
   });
 }
 
