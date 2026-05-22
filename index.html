@@ -633,8 +633,13 @@
     font-size:4rem;
     color:var(--noce);
     line-height:1;
+    display:flex;
+    align-items:baseline;
+    gap:.2rem;
   }
-  .price-card .pc-prezzo span { font-size:1.3rem; opacity:.6; }
+  .price-card .pc-prezzo .pc-cur { font-size:1.4rem; opacity:.7; }
+  .price-card .pc-prezzo .pc-val { font-size:4rem; }
+  .price-card .pc-prezzo > span:last-child { font-size:1.1rem; opacity:.6; margin-left:.2rem; }
   .price-card .pc-note {
     font-size:.8rem;
     opacity:.65;
@@ -1359,25 +1364,25 @@
 
         <div class="price-card">
           <div class="pc-stagione">🌸 Bassa stagione · Ott – Apr</div>
-          <div class="pc-prezzo">€ <span class="pc-val" data-base="80" data-4="150">80</span> <span>/ notte</span></div>
+          <div class="pc-prezzo"><span class="pc-cur">€</span><span class="pc-val" data-base="80" data-4="150">80</span> <span>/ notte</span></div>
           <div class="pc-note">Colazione inclusa</div>
         </div>
 
         <div class="price-card">
           <div class="pc-stagione">☀️ Media stagione · Mag – Giu · Set</div>
-          <div class="pc-prezzo">€ <span class="pc-val" data-base="110" data-4="200">110</span> <span>/ notte</span></div>
+          <div class="pc-prezzo"><span class="pc-cur">€</span><span class="pc-val" data-base="110" data-4="200">110</span> <span>/ notte</span></div>
           <div class="pc-note">Colazione inclusa</div>
         </div>
 
         <div class="price-card">
           <div class="pc-stagione">🌊 Alta stagione · Lug – Ago</div>
-          <div class="pc-prezzo">€ <span class="pc-val" data-base="140" data-4="260">140</span> <span>/ notte</span></div>
+          <div class="pc-prezzo"><span class="pc-cur">€</span><span class="pc-val" data-base="140" data-4="260">140</span> <span>/ notte</span></div>
           <div class="pc-note">Colazione inclusa</div>
         </div>
 
         <div class="price-card" style="border-left-color:var(--tufo);">
           <div class="pc-stagione">🎄 Festività & Capodanno</div>
-          <div class="pc-prezzo">€ <span class="pc-val" data-base="160" data-4="300">160</span> <span>/ notte</span></div>
+          <div class="pc-prezzo"><span class="pc-cur">€</span><span class="pc-val" data-base="160" data-4="300">160</span> <span>/ notte</span></div>
           <div class="pc-note">Colazione inclusa</div>
         </div>
 
