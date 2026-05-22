@@ -46,28 +46,40 @@ h1,h2,h3,h4,h5{font-family:'Cormorant Garamond',serif}
 .login-logo em{font-style:italic;color:var(--caffe)}
 .login-sub{font-size:.62rem;letter-spacing:.28em;text-transform:uppercase;color:var(--caffe);margin-bottom:.6rem;opacity:.9}
 .login-divider{width:38px;height:1px;background:linear-gradient(90deg,transparent,var(--tufo),transparent);margin:.4rem auto 1.6rem}
-.pin-dots{display:flex;gap:14px;justify-content:center;margin:0 0 .4rem}
-.pin-dot{width:13px;height:13px;border-radius:50%;border:2px solid rgba(155,110,62,.45);background:transparent;transition:all .2s}
-.pin-dot.filled{background:var(--caffe);border-color:var(--caffe);box-shadow:0 0 14px rgba(155,110,62,.55);animation:dotPop .2s ease}
-@keyframes dotPop{0%{transform:scale(0)}60%{transform:scale(1.35)}100%{transform:scale(1)}}
-@keyframes shake{0%,100%{transform:translateX(0)}20%{transform:translateX(-9px)}40%{transform:translateX(9px)}60%{transform:translateX(-6px)}80%{transform:translateX(6px)}}
-.pin-dots.shake{animation:shake .42s ease}
-.login-error{color:var(--cancelled);font-size:.76rem;margin:.5rem 0 .8rem;min-height:1.1em}
-.numpad{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;max-width:210px;margin:0 auto}
-.num-btn{
-  aspect-ratio:1;border-radius:50%;
-  border:1.5px solid rgba(226,201,154,.75);
-  background:rgba(255,255,255,.52);
+.login-form{display:flex;flex-direction:column;gap:.85rem}
+.login-field{position:relative;display:flex;align-items:center}
+.login-field-icon{position:absolute;left:.9rem;font-size:.82rem;opacity:.55;pointer-events:none}
+.login-field input{
+  width:100%;padding:.75rem 1rem .75rem 2.5rem;
+  border:1.5px solid rgba(226,201,154,.7);border-radius:.8rem;
+  background:rgba(255,255,255,.58);
   backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);
-  font-family:'Lato',sans-serif;font-size:1.15rem;font-weight:700;color:var(--noce);
-  cursor:pointer;transition:all .15s;display:flex;align-items:center;justify-content:center;
-  -webkit-tap-highlight-color:transparent;user-select:none;
-  box-shadow:0 2px 8px rgba(107,63,28,.07);
+  font-family:'Lato',sans-serif;font-size:.9rem;color:var(--testo);
+  outline:none;transition:all .2s;
 }
-.num-btn:hover{background:rgba(226,201,154,.45);border-color:var(--caffe);transform:scale(1.08);box-shadow:0 4px 18px rgba(107,63,28,.18)}
-.num-btn:active{transform:scale(.88);background:var(--caffe);color:#fff;border-color:var(--caffe);box-shadow:0 4px 20px rgba(155,110,62,.55)}
-.num-btn.empty{border-color:transparent;background:transparent;cursor:default;pointer-events:none;box-shadow:none}
-.num-btn.delete{font-size:.95rem;color:var(--caffe)}
+.login-field input::placeholder{color:rgba(74,46,16,.38);font-weight:300}
+.login-field input:focus{border-color:var(--caffe);background:rgba(255,255,255,.8);box-shadow:0 0 0 3px rgba(155,110,62,.13)}
+.login-error{color:var(--cancelled);font-size:.76rem;text-align:center;min-height:1.1em;margin:-.1rem 0}
+.login-remember{display:flex;align-items:center}
+.toggle-wrap{display:flex;align-items:center;gap:.5rem;cursor:pointer;user-select:none}
+.toggle-wrap input[type=checkbox]{display:none}
+.toggle-track{width:34px;height:19px;border-radius:10px;background:rgba(155,110,62,.22);transition:background .2s;position:relative;flex-shrink:0;border:1px solid rgba(155,110,62,.3)}
+.toggle-thumb{position:absolute;top:2px;left:2px;width:13px;height:13px;border-radius:50%;background:#fff;box-shadow:0 1px 4px rgba(0,0,0,.18);transition:transform .2s}
+.toggle-wrap input:checked ~ .toggle-track{background:var(--caffe);border-color:var(--caffe)}
+.toggle-wrap input:checked ~ .toggle-track .toggle-thumb{transform:translateX(15px)}
+.toggle-label{font-size:.78rem;color:var(--testo);opacity:.65}
+.login-btn{
+  width:100%;padding:.82rem;margin-top:.15rem;
+  background:var(--caffe);color:#fff;
+  border:none;border-radius:.8rem;
+  font-family:'Lato',sans-serif;font-size:.88rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;
+  cursor:pointer;transition:all .18s;
+  box-shadow:0 4px 18px rgba(155,110,62,.38);
+}
+.login-btn:hover{background:var(--noce);box-shadow:0 6px 26px rgba(107,63,28,.42);transform:translateY(-1px)}
+.login-btn:active{transform:translateY(0);box-shadow:0 2px 8px rgba(107,63,28,.22)}
+@keyframes shake{0%,100%{transform:translateX(0)}20%{transform:translateX(-9px)}40%{transform:translateX(9px)}60%{transform:translateX(-6px)}80%{transform:translateX(6px)}}
+.login-card.shake{animation:shake .42s ease}
 
 /* ══════════════════════════════════════ LAYOUT ══ */
 #dashboard{display:none;min-height:100vh}
@@ -310,27 +322,24 @@ h1,h2,h3,h4,h5{font-family:'Cormorant Garamond',serif}
     <div class="login-logo">Dimora <em>Stella</em></div>
     <div class="login-sub">Gestionale Prenotazioni</div>
     <div class="login-divider"></div>
-    <div class="pin-dots" id="pinDots">
-      <div class="pin-dot" id="dot0"></div>
-      <div class="pin-dot" id="dot1"></div>
-      <div class="pin-dot" id="dot2"></div>
-      <div class="pin-dot" id="dot3"></div>
-      <div class="pin-dot" id="dot4"></div>
-    </div>
-    <p class="login-error" id="loginError"></p>
-    <div class="numpad">
-      <button class="num-btn" onclick="pinPress('1')">1</button>
-      <button class="num-btn" onclick="pinPress('2')">2</button>
-      <button class="num-btn" onclick="pinPress('3')">3</button>
-      <button class="num-btn" onclick="pinPress('4')">4</button>
-      <button class="num-btn" onclick="pinPress('5')">5</button>
-      <button class="num-btn" onclick="pinPress('6')">6</button>
-      <button class="num-btn" onclick="pinPress('7')">7</button>
-      <button class="num-btn" onclick="pinPress('8')">8</button>
-      <button class="num-btn" onclick="pinPress('9')">9</button>
-      <button class="num-btn empty" disabled></button>
-      <button class="num-btn" onclick="pinPress('0')">0</button>
-      <button class="num-btn delete" onclick="pinDelete()">⌫</button>
+    <div class="login-form">
+      <div class="login-field">
+        <span class="login-field-icon">👤</span>
+        <input type="text" id="loginUsername" placeholder="Username" autocomplete="username" />
+      </div>
+      <div class="login-field">
+        <span class="login-field-icon">🔒</span>
+        <input type="password" id="loginPassword" placeholder="Password" autocomplete="current-password" />
+      </div>
+      <p class="login-error" id="loginError"></p>
+      <div class="login-remember">
+        <label class="toggle-wrap">
+          <input type="checkbox" id="rememberMe" />
+          <span class="toggle-track"><span class="toggle-thumb"></span></span>
+          <span class="toggle-label">Ricordami</span>
+        </label>
+      </div>
+      <button class="login-btn" onclick="doLogin()">Accedi</button>
     </div>
   </div>
 </div>
@@ -634,14 +643,15 @@ const FIREBASE_CONFIG = {
   messagingSenderId: "1011916098309",
   appId:             "1:1011916098309:web:d37475f8a3e7b12c29856c"
 };
-const ADMIN_PASSWORD = "11111";
+const ADMIN_USERNAME = "1234";
+const ADMIN_PASSWORD = "aaaa";
 const COLLECTION     = "prenotazioni";
 
 /* ── STATE ─────────────────────────────────────────────────────── */
 let db = null, bookings = [], chartInstances = {};
 let currentMonth = new Date().getMonth(), currentYear = new Date().getFullYear();
 let currentModalId = null, currentFilter = 'tutti';
-let pinValue = '', pinLocked = false, chartsRendered = false;
+let chartsRendered = false;
 
 const isConfigured = FIREBASE_CONFIG.apiKey !== "INSERISCI_LA_TUA_API_KEY";
 
@@ -663,39 +673,30 @@ window.addEventListener('load', () => {
   document.getElementById('welcomeDate').textContent = now.toLocaleDateString('it-IT',{weekday:'long',day:'numeric',month:'long',year:'numeric'});
   document.getElementById('headerDate').textContent = now.toLocaleDateString('it-IT',{weekday:'long',day:'numeric',month:'long'});
 
-  if (sessionStorage.getItem('ds_auth') === '1') showDashboard();
+  if (sessionStorage.getItem('ds_auth') === '1' || localStorage.getItem('ds_auth') === '1') showDashboard();
+
+  document.getElementById('loginUsername').addEventListener('keydown', e => { if (e.key === 'Enter') document.getElementById('loginPassword').focus(); });
+  document.getElementById('loginPassword').addEventListener('keydown', e => { if (e.key === 'Enter') doLogin(); });
 });
 
-/* ── PIN ───────────────────────────────────────────────────────── */
-function pinPress(n) {
-  if (pinLocked || pinValue.length >= ADMIN_PASSWORD.length) return;
-  pinValue += n;
-  document.getElementById('dot' + (pinValue.length - 1)).classList.add('filled');
-  if (pinValue.length === ADMIN_PASSWORD.length) { pinLocked = true; setTimeout(checkPin, 180); }
-}
-function pinDelete() {
-  if (pinLocked || !pinValue.length) return;
-  document.getElementById('dot' + (pinValue.length - 1)).classList.remove('filled');
-  pinValue = pinValue.slice(0, -1);
-  document.getElementById('loginError').textContent = '';
-}
-function checkPin() {
-  if (pinValue === ADMIN_PASSWORD) {
-    sessionStorage.setItem('ds_auth', '1');
+/* ── LOGIN ─────────────────────────────────────────────────────── */
+function doLogin() {
+  const u = document.getElementById('loginUsername').value.trim();
+  const p = document.getElementById('loginPassword').value;
+  const err = document.getElementById('loginError');
+  const card = document.querySelector('.login-card');
+  if (u === ADMIN_USERNAME && p === ADMIN_PASSWORD) {
+    if (document.getElementById('rememberMe').checked) localStorage.setItem('ds_auth', '1');
+    else sessionStorage.setItem('ds_auth', '1');
     showDashboard();
   } else {
-    const dots = document.getElementById('pinDots');
-    dots.classList.add('shake');
-    document.getElementById('loginError').textContent = 'PIN non corretto';
-    setTimeout(() => {
-      dots.classList.remove('shake');
-      pinValue = ''; pinLocked = false;
-      for (let i = 0; i < ADMIN_PASSWORD.length; i++) document.getElementById('dot' + i).classList.remove('filled');
-      setTimeout(() => document.getElementById('loginError').textContent = '', 900);
-    }, 500);
+    card.classList.add('shake');
+    err.textContent = 'Credenziali non corrette';
+    document.getElementById('loginPassword').value = '';
+    setTimeout(() => { card.classList.remove('shake'); setTimeout(() => err.textContent = '', 900); }, 500);
   }
 }
-function logout() { sessionStorage.removeItem('ds_auth'); location.reload(); }
+function logout() { sessionStorage.removeItem('ds_auth'); localStorage.removeItem('ds_auth'); location.reload(); }
 
 /* ── SHOW DASHBOARD ────────────────────────────────────────────── */
 function showDashboard() {
