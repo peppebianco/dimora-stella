@@ -13,10 +13,14 @@
     "rewrites": [
       { "source": "/api/send-whatsapp", "function": "sendWhatsapp" },
       { "source": "/api/ical-sync",     "function": "icalSync"     },
+      { "source": "/api/send-email",    "function": "sendEmail"    },
       { "source": "/admin",             "destination": "/gestionale.html" }
     ]
   },
   "functions": {
     "source": "functions"
+  },
+  "firestore": {
+    "rules": "firestore.rules"
   }
 }

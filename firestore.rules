@@ -1,0 +1,11 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    match /prenotazioni/{id} {
+      // Chiunque può creare una nuova richiesta (form sul sito pubblico)
+      allow create: if true;
+      // Solo admin autenticato può leggere, modificare, eliminare
+      allow read, update, delete: if request.auth != null;
+    }
+  }
+}

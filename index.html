@@ -1693,6 +1693,12 @@ function submitBooking(e) {
     stato: 'in_attesa',
     timestamp: firebase.firestore.FieldValue.serverTimestamp()
   }).then(() => {
+    // Notifica email all'admin (non bloccante)
+    fetch('/api/send-email', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ tipo: 'nuova', nome: nome + ' ' + cognome, email, checkin, checkout, ospiti }),
+    }).catch(() => {});
     showToast('✓ Richiesta inviata! Risponderemo entro 24 ore.');
     e.target.reset();
     btn.disabled = false;

@@ -69,6 +69,105 @@ exports.sendWhatsapp = functions.https.onRequest(async (req, res) => {
 });
 
 /* ══════════════════════════════════════════════════════════════════
+   SEND EMAIL
+   POST /api/send-email
+   Body: { tipo, nome, email, checkin, checkout, ospiti, lingua }
+   tipo: 'nuova' | 'conferma' | 'rifiuto'
+   ══════════════════════════════════════════════════════════════════ */
+exports.sendEmail = functions.https.onRequest(async (req, res) => {
+  res.set('Access-Control-Allow-Origin', '*');
+  res.set('Access-Control-Allow-Methods', 'POST, OPTIONS');
+  res.set('Access-Control-Allow-Headers', 'Content-Type');
+  if (req.method === 'OPTIONS') return res.status(200).end();
+  if (req.method !== 'POST')   return res.status(405).json({ ok: false, error: 'Method not allowed' });
+
+  const { tipo, nome, email, checkin, checkout, ospiti, lingua } = req.body || {};
+  if (!tipo) return res.status(400).json({ ok: false, error: 'tipo obbligatorio' });
+
+  const EMAIL_USER   = process.env.EMAIL_USER;
+  const EMAIL_PASS   = process.env.EMAIL_PASS;
+  const EMAIL_HOST   = process.env.EMAIL_HOST   || 'smtps.aruba.it';
+  const EMAIL_PORT   = parseInt(process.env.EMAIL_PORT || '465');
+  const ADMIN_EMAIL  = process.env.ADMIN_EMAIL  || EMAIL_USER || 'info@dimorastella.com';
+
+  const isIT = lingua !== 'en';
+  const ci   = fmtData(checkin);
+  const co   = fmtData(checkout);
+
+  let to, subject, html;
+
+  if (tipo === 'nuova') {
+    to      = ADMIN_EMAIL;
+    subject = `Nuova richiesta — ${nome} (${ci} → ${co})`;
+    html    = `<p><b>Nuova richiesta di prenotazione</b></p>
+               <p><b>Nome:</b> ${nome}<br>
+               <b>Email:</b> ${email || '—'}<br>
+               <b>Check-in:</b> ${ci}<br>
+               <b>Check-out:</b> ${co}<br>
+               <b>Ospiti:</b> ${ospiti}</p>
+               <p><a href="https://dimora-stella.web.app/admin">Apri il gestionale →</a></p>`;
+  } else if (tipo === 'conferma') {
+    to      = email;
+    subject = isIT ? 'Prenotazione confermata — Dimora Stella' : 'Booking confirmed — Dimora Stella';
+    html    = isIT
+      ? `<p>Ciao <b>${nome}</b>,</p>
+         <p>La tua prenotazione a <b>Dimora Stella</b> è <b>confermata</b>.</p>
+         <p><b>Check-in:</b> ${ci}<br><b>Check-out:</b> ${co}<br><b>Ospiti:</b> ${ospiti}</p>
+         <p>Indirizzo: Via Galiani, Pezze di Greco (BR)<br>
+         Check-in dalle 15:00 · Check-out entro le 10:00</p>
+         <p>Per qualsiasi necessità scrivici a <a href="mailto:${ADMIN_EMAIL}">${ADMIN_EMAIL}</a> o su WhatsApp al +39 380 775 2931.</p>
+         <p>A presto!<br><i>Dimora Stella</i></p>`
+      : `<p>Hi <b>${nome}</b>,</p>
+         <p>Your booking at <b>Dimora Stella</b> is <b>confirmed</b>.</p>
+         <p><b>Check-in:</b> ${ci}<br><b>Check-out:</b> ${co}<br><b>Guests:</b> ${ospiti}</p>
+         <p>Address: Via Galiani, Pezze di Greco (BR)<br>
+         Check-in from 15:00 · Check-out by 10:00</p>
+         <p>Contact us at <a href="mailto:${ADMIN_EMAIL}">${ADMIN_EMAIL}</a> or WhatsApp +39 380 775 2931.</p>
+         <p>See you soon!<br><i>Dimora Stella</i></p>`;
+  } else if (tipo === 'rifiuto') {
+    to      = email;
+    subject = isIT ? 'Richiesta prenotazione — Dimora Stella' : 'Booking request — Dimora Stella';
+    html    = isIT
+      ? `<p>Ciao <b>${nome}</b>,</p>
+         <p>Purtroppo le date che hai richiesto non sono più disponibili.</p>
+         <p>Puoi controllare le disponibilità sul nostro sito e inviare una nuova richiesta.<br>
+         Ci scusiamo per l'inconveniente.</p>
+         <p><i>Dimora Stella</i></p>`
+      : `<p>Hi <b>${nome}</b>,</p>
+         <p>Unfortunately the dates you requested are no longer available.</p>
+         <p>Please check availability on our website and submit a new request.<br>
+         We apologize for the inconvenience.</p>
+         <p><i>Dimora Stella</i></p>`;
+  } else {
+    return res.status(400).json({ ok: false, error: 'tipo non valido' });
+  }
+
+  if (!to) return res.status(400).json({ ok: false, error: 'email destinatario mancante' });
+
+  // Modalità test — credenziali non configurate
+  if (!EMAIL_USER || !EMAIL_PASS) {
+    console.log('[Email TEST] To:', to, '\nSubject:', subject);
+    return res.status(200).json({ ok: true, mode: 'test', to, subject });
+  }
+
+  const nodemailer = require('nodemailer');
+  const transporter = nodemailer.createTransport({
+    host: EMAIL_HOST,
+    port: EMAIL_PORT,
+    secure: EMAIL_PORT === 465,
+    auth: { user: EMAIL_USER, pass: EMAIL_PASS },
+  });
+
+  try {
+    await transporter.sendMail({ from: `"Dimora Stella" <${EMAIL_USER}>`, to, subject, html });
+    return res.status(200).json({ ok: true });
+  } catch (err) {
+    console.error('[Email ERROR]', err.message);
+    return res.status(500).json({ ok: false, error: err.message });
+  }
+});
+
+/* ══════════════════════════════════════════════════════════════════
    ICAL SYNC
    GET /api/ical-sync
    Legge i feed Airbnb e Booking.com e restituisce i periodi bloccati

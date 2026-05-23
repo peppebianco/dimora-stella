@@ -360,7 +360,7 @@ h1,h2,h3,h4,h5{font-family:'Cormorant Garamond',serif}
     <div class="login-form">
       <div class="login-field">
         <span class="login-field-icon">👤</span>
-        <input type="text" id="loginUsername" placeholder="Username" autocomplete="username" />
+        <input type="email" id="loginUsername" placeholder="Email" autocomplete="email" />
       </div>
       <div class="login-field">
         <span class="login-field-icon">🔒</span>
@@ -706,6 +706,7 @@ h1,h2,h3,h4,h5{font-family:'Cormorant Garamond',serif}
 
 <!-- ══════════ SCRIPTS ═══════════════════════════════════════════════ -->
 <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
 
@@ -721,9 +722,7 @@ const FIREBASE_CONFIG = {
   messagingSenderId: "1011916098309",
   appId:             "1:1011916098309:web:d37475f8a3e7b12c29856c"
 };
-const ADMIN_USERNAME = "1234";
-const ADMIN_PASSWORD = "aaaa";
-const COLLECTION     = "prenotazioni";
+const COLLECTION = "prenotazioni";
 
 /* ── STATE ─────────────────────────────────────────────────────── */
 let db = null, bookings = [], chartInstances = {};
@@ -751,30 +750,32 @@ window.addEventListener('load', () => {
   document.getElementById('welcomeDate').textContent = now.toLocaleDateString('it-IT',{weekday:'long',day:'numeric',month:'long',year:'numeric'});
   document.getElementById('headerDate').textContent = now.toLocaleDateString('it-IT',{weekday:'long',day:'numeric',month:'long'});
 
-  if (sessionStorage.getItem('ds_auth') === '1' || localStorage.getItem('ds_auth') === '1') showDashboard();
+  firebase.auth().onAuthStateChanged(user => { if (user) showDashboard(); });
 
   document.getElementById('loginUsername').addEventListener('keydown', e => { if (e.key === 'Enter') document.getElementById('loginPassword').focus(); });
   document.getElementById('loginPassword').addEventListener('keydown', e => { if (e.key === 'Enter') doLogin(); });
 });
 
 /* ── LOGIN ─────────────────────────────────────────────────────── */
-function doLogin() {
-  const u = document.getElementById('loginUsername').value.trim();
-  const p = document.getElementById('loginPassword').value;
-  const err = document.getElementById('loginError');
-  const card = document.querySelector('.login-card');
-  if (u === ADMIN_USERNAME && p === ADMIN_PASSWORD) {
-    if (document.getElementById('rememberMe').checked) localStorage.setItem('ds_auth', '1');
-    else sessionStorage.setItem('ds_auth', '1');
-    showDashboard();
-  } else {
+async function doLogin() {
+  const email = document.getElementById('loginUsername').value.trim();
+  const p     = document.getElementById('loginPassword').value;
+  const err   = document.getElementById('loginError');
+  const card  = document.querySelector('.login-card');
+  const btn   = card.querySelector('.login-btn');
+  btn.disabled = true; btn.textContent = 'Accesso…';
+  try {
+    await firebase.auth().signInWithEmailAndPassword(email, p);
+    // onAuthStateChanged gestisce il redirect alla dashboard
+  } catch(e) {
     card.classList.add('shake');
     err.textContent = 'Credenziali non corrette';
     document.getElementById('loginPassword').value = '';
+    btn.disabled = false; btn.textContent = 'Accedi';
     setTimeout(() => { card.classList.remove('shake'); setTimeout(() => err.textContent = '', 900); }, 500);
   }
 }
-function logout() { sessionStorage.removeItem('ds_auth'); localStorage.removeItem('ds_auth'); location.reload(); }
+function logout() { firebase.auth().signOut(); }
 
 /* ── SHOW DASHBOARD ────────────────────────────────────────────── */
 function showDashboard() {
@@ -889,10 +890,10 @@ async function quickConfirm(id) {
       stato: 'confermata',
       confermaTimestamp: firebase.firestore.FieldValue.serverTimestamp(),
     });
-    // Invia WhatsApp (non bloccante — va avanti anche se fallisce)
-    if (b.telefono) {
-      sendWhatsApp({ phone: b.telefono, tipo: 'conferma', nome: b.nome, checkin: b.checkin, checkout: b.checkout, ospiti: b.ospiti, lingua: 'it' })
-        .then(r => { if (r.ok) showToastG('✓ Confermata · WhatsApp inviato ✓'); });
+    // Invia email di conferma (non bloccante)
+    if (b.email) {
+      sendEmail({ tipo: 'conferma', nome: b.nome, email: b.email, checkin: b.checkin, checkout: b.checkout, ospiti: b.ospiti, lingua: 'it' })
+        .then(r => { if (r.ok && r.mode !== 'test') showToastG('✓ Confermata · Email inviata ✓'); });
     }
     await loadBookings();
     showToastG('✓ Prenotazione confermata');
@@ -1095,9 +1096,9 @@ function openModal(id) {
   qa.style.display = b.stato === 'in_attesa' ? 'block' : 'none';
   document.getElementById('wa-status').textContent = '';
   document.getElementById('btn-conferma').disabled = false;
-  document.getElementById('btn-conferma').textContent = '✓ Conferma e invia WhatsApp';
+  document.getElementById('btn-conferma').textContent = '✓ Conferma e invia Email';
   document.getElementById('btn-rifiuta').disabled = false;
-  document.getElementById('btn-rifiuta').textContent = '✗ Rifiuta e invia WhatsApp';
+  document.getElementById('btn-rifiuta').textContent = '✗ Rifiuta e invia Email';
   // Auto-rileva lingua: +39 = italiano, altrimenti inglese
   const digits = (b.telefono || '').replace(/\D/g, '');
   document.getElementById('m-lingua').value = (!digits || digits.startsWith('39')) ? 'it' : 'en';
@@ -1172,10 +1173,10 @@ function statusLabel(s) { return {in_attesa:'In Attesa',confermata:'Confermata',
 function formatDate(iso) { if(!iso) return '—'; const [y,m,d]=iso.split('-'); return `${d}/${m}/${y}`; }
 function showToastG(msg) { const t=document.getElementById('toastG'); t.textContent=msg; t.classList.add('show'); setTimeout(()=>t.classList.remove('show'),3500); }
 
-/* ── WHATSAPP ──────────────────────────────────────────────────── */
-async function sendWhatsApp(payload) {
+/* ── EMAIL ─────────────────────────────────────────────────────── */
+async function sendEmail(payload) {
   try {
-    const r = await fetch('/api/send-whatsapp', {
+    const r = await fetch('/api/send-email', {
       method:  'POST',
       headers: { 'Content-Type': 'application/json' },
       body:    JSON.stringify(payload),
@@ -1210,28 +1211,28 @@ async function confermaPrenotazione() {
     }
 
     const lingua = document.getElementById('m-lingua').value;
-    let waMsg = '';
-    if (b.telefono) {
-      const res = await sendWhatsApp({ phone: b.telefono, tipo: 'conferma', nome: b.nome, checkin: b.checkin, checkout: b.checkout, ospiti: b.ospiti, lingua });
-      waMsg = res.ok ? (res.mode === 'test' ? ' · WhatsApp (test mode)' : ' · WhatsApp inviato ✓') : ' · WhatsApp non inviato';
+    let msg = '';
+    if (b.email) {
+      const res = await sendEmail({ tipo: 'conferma', nome: b.nome, email: b.email, checkin: b.checkin, checkout: b.checkout, ospiti: b.ospiti, lingua });
+      msg = res.ok ? (res.mode === 'test' ? ' · Email (test mode)' : ' · Email inviata ✓') : ' · Email non inviata';
     } else {
-      waMsg = ' · Nessun numero tel.';
+      msg = ' · Nessuna email cliente';
     }
 
     await (isConfigured ? loadBookings() : Promise.resolve(renderAll()));
     closeModal();
-    showToastG('✓ Confermata' + waMsg);
+    showToastG('✓ Confermata' + msg);
   } catch (e) {
     waEl.style.color = '#DC2626';
     waEl.textContent = 'Errore: ' + e.message;
     btnC.disabled = btnR.disabled = false;
-    btnC.textContent = '✓ Conferma e invia WhatsApp';
+    btnC.textContent = '✓ Conferma e invia Email';
   }
 }
 
 async function rifiutaPrenotazione() {
   if (!currentModalId) return;
-  if (!confirm('Rifiutare questa prenotazione e avvisare il cliente via WhatsApp?')) return;
+  if (!confirm('Rifiutare questa prenotazione e avvisare il cliente via email?')) return;
   const b = bookings.find(x => x.id === currentModalId);
   if (!b) return;
 
@@ -1254,22 +1255,22 @@ async function rifiutaPrenotazione() {
     }
 
     const lingua = document.getElementById('m-lingua').value;
-    let waMsg = '';
-    if (b.telefono) {
-      const res = await sendWhatsApp({ phone: b.telefono, tipo: 'rifiuto', nome: b.nome, checkin: b.checkin, checkout: b.checkout, ospiti: b.ospiti, lingua });
-      waMsg = res.ok ? (res.mode === 'test' ? ' · WhatsApp (test mode)' : ' · WhatsApp inviato ✓') : ' · WhatsApp non inviato';
+    let msg = '';
+    if (b.email) {
+      const res = await sendEmail({ tipo: 'rifiuto', nome: b.nome, email: b.email, checkin: b.checkin, checkout: b.checkout, ospiti: b.ospiti, lingua });
+      msg = res.ok ? (res.mode === 'test' ? ' · Email (test mode)' : ' · Email inviata ✓') : ' · Email non inviata';
     } else {
-      waMsg = ' · Nessun numero tel.';
+      msg = ' · Nessuna email cliente';
     }
 
     await (isConfigured ? loadBookings() : Promise.resolve(renderAll()));
     closeModal();
-    showToastG('Rifiutata' + waMsg);
+    showToastG('Rifiutata' + msg);
   } catch (e) {
     waEl.style.color = '#DC2626';
     waEl.textContent = 'Errore: ' + e.message;
     btnC.disabled = btnR.disabled = false;
-    btnR.textContent = '✗ Rifiuta e invia WhatsApp';
+    btnR.textContent = '✗ Rifiuta e invia Email';
   }
 }
 
