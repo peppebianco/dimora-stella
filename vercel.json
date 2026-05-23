@@ -1,9 +1,0 @@
-{
-  "name": "dimora-stella",
-  "buildCommand": null,
-  "outputDirectory": ".",
-  "framework": null,
-  "rewrites": [
-    { "source": "/admin", "destination": "/gestionale.html" }
-  ]
-}

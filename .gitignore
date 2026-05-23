@@ -7,3 +7,4 @@ ISTRUZIONI.txt
 .env
 .env.local
 node_modules/
+functions/node_modules/

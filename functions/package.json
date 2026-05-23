@@ -1,0 +1,10 @@
+{
+  "name": "dimora-stella-functions",
+  "description": "Firebase Cloud Functions — Dimora Stella",
+  "engines": { "node": "18" },
+  "main": "index.js",
+  "dependencies": {
+    "firebase-functions": "^4.9.0"
+  },
+  "private": true
+}
