@@ -288,6 +288,18 @@ h1,h2,h3,h4,h5{font-family:'Cormorant Garamond',serif}
 .m-btn-save:hover{background:var(--noce)}
 .m-btn-delete{padding:.5rem 1rem;background:#FEE2E2;color:#DC2626;border:1.5px solid #DC2626;border-radius:var(--r);font-weight:700;font-size:.78rem;cursor:pointer;transition:.2s;margin-left:auto;white-space:nowrap}
 .m-btn-delete:hover{background:#DC2626;color:#fff}
+.m-quick-actions{display:none;width:100%;margin-bottom:.8rem;padding:.9rem;background:#F8FDF9;border:1.5px solid #BBF7D0;border-radius:var(--r)}
+.m-quick-title{font-size:.63rem;font-weight:700;text-transform:uppercase;letter-spacing:.12em;color:#15803D;margin-bottom:.6rem}
+.m-quick-btns{display:flex;gap:.5rem;margin-bottom:.55rem}
+.m-btn-conferma{flex:1;padding:.6rem .9rem;background:#D1FAE5;color:#15803D;border:1.5px solid #15803D;border-radius:var(--r);font-family:inherit;font-weight:700;font-size:.8rem;cursor:pointer;transition:.15s}
+.m-btn-conferma:hover{background:#15803D;color:#fff}
+.m-btn-rifiuta{flex:1;padding:.6rem .9rem;background:#FEE2E2;color:#DC2626;border:1.5px solid #DC2626;border-radius:var(--r);font-family:inherit;font-weight:700;font-size:.8rem;cursor:pointer;transition:.15s}
+.m-btn-rifiuta:hover{background:#DC2626;color:#fff}
+.m-btn-conferma:disabled,.m-btn-rifiuta:disabled{opacity:.55;cursor:not-allowed}
+.m-lingua-row{display:flex;align-items:center;gap:.5rem}
+.m-lingua-row label{font-size:.63rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:#666}
+.m-lingua-row select{padding:.28rem .55rem;border:1.5px solid var(--tufo);border-radius:var(--r);font-family:inherit;font-size:.75rem;background:var(--panna);color:var(--testo);cursor:pointer}
+.wa-status{font-size:.72rem;margin-top:.45rem;min-height:1.1em;font-weight:700}
 
 /* ══════════════════════════════════════ CONFIG WARNING ══ */
 .config-warning{background:#FEF3C7;border:1.5px solid #F59E0B;border-radius:var(--r);padding:.8rem 1.5rem;margin:0 2rem 1rem;font-size:.8rem}
@@ -658,15 +670,33 @@ h1,h2,h3,h4,h5{font-family:'Cormorant Garamond',serif}
       <div class="modal-field full"><label>Note</label><span id="m-note">—</span></div>
     </div>
     <div class="modal-divider"></div>
+
+    <!-- Azioni rapide — visibili solo se stato = in_attesa -->
+    <div id="m-quick-actions" class="m-quick-actions">
+      <div class="m-quick-title">Rispondi alla richiesta</div>
+      <div class="m-quick-btns">
+        <button class="m-btn-conferma" id="btn-conferma" onclick="confermaPrenotazione()">✓ Conferma e invia WhatsApp</button>
+        <button class="m-btn-rifiuta"  id="btn-rifiuta"  onclick="rifiutaPrenotazione()">✗ Rifiuta e invia WhatsApp</button>
+      </div>
+      <div class="m-lingua-row">
+        <label>Lingua messaggio</label>
+        <select id="m-lingua">
+          <option value="it">Italiano</option>
+          <option value="en">English</option>
+        </select>
+      </div>
+      <div class="wa-status" id="wa-status"></div>
+    </div>
+
     <div class="modal-actions">
       <select id="m-stato-select">
         <option value="in_attesa">In Attesa</option>
-        <option value="confermata">Conferma</option>
-        <option value="cancellata">Cancella</option>
+        <option value="confermata">Confermata</option>
+        <option value="cancellata">Cancellata</option>
         <option value="completata">Completata</option>
         <option value="bloccata">Bloccata</option>
       </select>
-      <button class="m-btn-save" onclick="saveModalStatus()">Salva</button>
+      <button class="m-btn-save" onclick="saveModalStatus()">Salva stato</button>
       <button class="m-btn-delete" onclick="deleteCurrentBooking()">Elimina</button>
     </div>
   </div>
@@ -849,14 +879,24 @@ function renderDashboard() {
 }
 
 async function quickConfirm(id) {
+  const b = bookings.find(x => x.id === id);
+  if (!b) return;
   if (!isConfigured) {
-    const b = bookings.find(x => x.id===id); if (b) b.stato='confermata';
-    renderAll(); showToastG('✓ Confermata (demo)'); return;
+    b.stato = 'confermata'; renderAll(); showToastG('✓ Confermata (demo)'); return;
   }
   try {
-    await db.collection(COLLECTION).doc(id).update({ stato:'confermata' });
-    await loadBookings(); showToastG('✓ Prenotazione confermata');
-  } catch(e) { showToastG('Errore'); }
+    await db.collection(COLLECTION).doc(id).update({
+      stato: 'confermata',
+      confermaTimestamp: firebase.firestore.FieldValue.serverTimestamp(),
+    });
+    // Invia WhatsApp (non bloccante — va avanti anche se fallisce)
+    if (b.telefono) {
+      sendWhatsApp({ phone: b.telefono, tipo: 'conferma', nome: b.nome, checkin: b.checkin, checkout: b.checkout, ospiti: b.ospiti, lingua: 'it' })
+        .then(r => { if (r.ok) showToastG('✓ Confermata · WhatsApp inviato ✓'); });
+    }
+    await loadBookings();
+    showToastG('✓ Prenotazione confermata');
+  } catch (e) { showToastG('Errore'); }
 }
 
 /* ── CALENDAR ──────────────────────────────────────────────────── */
@@ -1049,6 +1089,19 @@ function openModal(id) {
   const badge = document.getElementById('m-badge');
   badge.textContent = statusLabel(b.stato); badge.className = `bc-badge ${b.stato}`;
   document.getElementById('m-stato-select').value = b.stato;
+
+  // Blocco azioni rapide — solo per prenotazioni in attesa
+  const qa = document.getElementById('m-quick-actions');
+  qa.style.display = b.stato === 'in_attesa' ? 'block' : 'none';
+  document.getElementById('wa-status').textContent = '';
+  document.getElementById('btn-conferma').disabled = false;
+  document.getElementById('btn-conferma').textContent = '✓ Conferma e invia WhatsApp';
+  document.getElementById('btn-rifiuta').disabled = false;
+  document.getElementById('btn-rifiuta').textContent = '✗ Rifiuta e invia WhatsApp';
+  // Auto-rileva lingua: +39 = italiano, altrimenti inglese
+  const digits = (b.telefono || '').replace(/\D/g, '');
+  document.getElementById('m-lingua').value = (!digits || digits.startsWith('39')) ? 'it' : 'en';
+
   document.getElementById('modal').classList.add('open');
   document.body.style.overflow = 'hidden';
 }
@@ -1118,6 +1171,107 @@ function statusColor(s) { return {in_attesa:'#D97706',confermata:'#15803D',cance
 function statusLabel(s) { return {in_attesa:'In Attesa',confermata:'Confermata',cancellata:'Cancellata',completata:'Completata',bloccata:'Bloccata'}[s]||s; }
 function formatDate(iso) { if(!iso) return '—'; const [y,m,d]=iso.split('-'); return `${d}/${m}/${y}`; }
 function showToastG(msg) { const t=document.getElementById('toastG'); t.textContent=msg; t.classList.add('show'); setTimeout(()=>t.classList.remove('show'),3500); }
+
+/* ── WHATSAPP ──────────────────────────────────────────────────── */
+async function sendWhatsApp(payload) {
+  try {
+    const r = await fetch('/api/send-whatsapp', {
+      method:  'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body:    JSON.stringify(payload),
+    });
+    return await r.json();
+  } catch (e) {
+    return { ok: false, error: e.message };
+  }
+}
+
+async function confermaPrenotazione() {
+  if (!currentModalId) return;
+  const b = bookings.find(x => x.id === currentModalId);
+  if (!b) return;
+
+  const btnC = document.getElementById('btn-conferma');
+  const btnR = document.getElementById('btn-rifiuta');
+  const waEl = document.getElementById('wa-status');
+  btnC.disabled = btnR.disabled = true;
+  btnC.textContent = 'Confermando…';
+  waEl.style.color = '#888';
+  waEl.textContent = 'Aggiornamento in corso…';
+
+  try {
+    if (isConfigured) {
+      await db.collection(COLLECTION).doc(currentModalId).update({
+        stato: 'confermata',
+        confermaTimestamp: firebase.firestore.FieldValue.serverTimestamp(),
+      });
+    } else {
+      b.stato = 'confermata';
+    }
+
+    const lingua = document.getElementById('m-lingua').value;
+    let waMsg = '';
+    if (b.telefono) {
+      const res = await sendWhatsApp({ phone: b.telefono, tipo: 'conferma', nome: b.nome, checkin: b.checkin, checkout: b.checkout, ospiti: b.ospiti, lingua });
+      waMsg = res.ok ? (res.mode === 'test' ? ' · WhatsApp (test mode)' : ' · WhatsApp inviato ✓') : ' · WhatsApp non inviato';
+    } else {
+      waMsg = ' · Nessun numero tel.';
+    }
+
+    await (isConfigured ? loadBookings() : Promise.resolve(renderAll()));
+    closeModal();
+    showToastG('✓ Confermata' + waMsg);
+  } catch (e) {
+    waEl.style.color = '#DC2626';
+    waEl.textContent = 'Errore: ' + e.message;
+    btnC.disabled = btnR.disabled = false;
+    btnC.textContent = '✓ Conferma e invia WhatsApp';
+  }
+}
+
+async function rifiutaPrenotazione() {
+  if (!currentModalId) return;
+  if (!confirm('Rifiutare questa prenotazione e avvisare il cliente via WhatsApp?')) return;
+  const b = bookings.find(x => x.id === currentModalId);
+  if (!b) return;
+
+  const btnC = document.getElementById('btn-conferma');
+  const btnR = document.getElementById('btn-rifiuta');
+  const waEl = document.getElementById('wa-status');
+  btnC.disabled = btnR.disabled = true;
+  btnR.textContent = 'Rifiutando…';
+  waEl.style.color = '#888';
+  waEl.textContent = 'Aggiornamento in corso…';
+
+  try {
+    if (isConfigured) {
+      await db.collection(COLLECTION).doc(currentModalId).update({
+        stato: 'cancellata',
+        rifiutoTimestamp: firebase.firestore.FieldValue.serverTimestamp(),
+      });
+    } else {
+      b.stato = 'cancellata';
+    }
+
+    const lingua = document.getElementById('m-lingua').value;
+    let waMsg = '';
+    if (b.telefono) {
+      const res = await sendWhatsApp({ phone: b.telefono, tipo: 'rifiuto', nome: b.nome, checkin: b.checkin, checkout: b.checkout, ospiti: b.ospiti, lingua });
+      waMsg = res.ok ? (res.mode === 'test' ? ' · WhatsApp (test mode)' : ' · WhatsApp inviato ✓') : ' · WhatsApp non inviato';
+    } else {
+      waMsg = ' · Nessun numero tel.';
+    }
+
+    await (isConfigured ? loadBookings() : Promise.resolve(renderAll()));
+    closeModal();
+    showToastG('Rifiutata' + waMsg);
+  } catch (e) {
+    waEl.style.color = '#DC2626';
+    waEl.textContent = 'Errore: ' + e.message;
+    btnC.disabled = btnR.disabled = false;
+    btnR.textContent = '✗ Rifiuta e invia WhatsApp';
+  }
+}
 
 /* ── KEYBOARD ──────────────────────────────────────────────────── */
 document.addEventListener('keydown', e => {

@@ -4,3 +4,6 @@ foto/_orig_*
 ISTRUZIONI.txt
 
 .vercel
+.env
+.env.local
+node_modules/

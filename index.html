@@ -1705,25 +1705,39 @@ function submitBooking(e) {
   });
 }
 
-/* ── DATE DISABILITATE DA PRENOTAZIONI CONFERMATE ────────────── */
-function loadDisabledDates() {
-  if (!db_sito) return;
-  db_sito.collection('prenotazioni')
-    .where('stato', 'in', ['confermata', 'bloccata'])
-    .get()
-    .then(snap => {
-      disabledRanges = snap.docs.map(d => {
+/* ── DATE DISABILITATE (Firebase + iCal Airbnb/Booking) ─────── */
+async function loadDisabledDates() {
+  disabledRanges = [];
+
+  // 1. Prenotazioni confermate/bloccate da Firebase
+  if (db_sito) {
+    try {
+      const snap = await db_sito.collection('prenotazioni')
+        .where('stato', 'in', ['confermata', 'bloccata'])
+        .get();
+      snap.docs.forEach(d => {
         const { checkin, checkout } = d.data();
-        return { from: checkin, to: checkout };
+        if (checkin && checkout) disabledRanges.push({ from: checkin, to: checkout });
       });
-      const disableFn = date => {
-        const ds = date.toISOString().split('T')[0];
-        return disabledRanges.some(r => ds >= r.from && ds < r.to);
-      };
-      checkinPicker.set('disable', [disableFn]);
-      checkoutPicker.set('disable', [disableFn]);
-    })
-    .catch(err => console.warn('loadDisabledDates:', err));
+    } catch (err) { console.warn('Firebase disabledDates:', err); }
+  }
+
+  // 2. Periodi occupati da Airbnb e Booking.com via iCal
+  try {
+    const r = await fetch('/api/ical-sync');
+    if (r.ok) {
+      const { ranges } = await r.json();
+      if (Array.isArray(ranges)) ranges.forEach(e => disabledRanges.push(e));
+    }
+  } catch (err) { console.warn('iCal sync:', err); }
+
+  // Applica ai datepicker
+  const disableFn = date => {
+    const ds = date.toISOString().split('T')[0];
+    return disabledRanges.some(r => ds >= r.from && ds < r.to);
+  };
+  checkinPicker.set('disable', [disableFn]);
+  checkoutPicker.set('disable', [disableFn]);
 }
 
 
@@ -1764,8 +1778,8 @@ document.querySelectorAll('.service-card, .review-card, .price-card, .about-feat
   observer.observe(el);
 });
 
-// Carica date disabilitate da prenotazioni confermate
-if (FB_OK && db_sito) loadDisabledDates();
+// Carica date disabilitate (Firebase + iCal Airbnb/Booking)
+loadDisabledDates();
 </script>
 </body>
 </html>
