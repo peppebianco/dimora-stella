@@ -436,6 +436,7 @@ h1,h2,h3,h4,h5{font-family:'Cormorant Garamond',serif}
         <button onclick="nextMonth()">›</button>
       </div>
       <button class="refresh-btn" onclick="refreshData()" title="Aggiorna">↻</button>
+      <button class="refresh-btn" onclick="exportCSV()" title="Esporta CSV" style="font-size:.75rem;padding:.4rem .8rem;border-radius:.5rem;width:auto;">↓ CSV</button>
     </header>
 
     <div class="sections-wrap">
@@ -667,6 +668,10 @@ h1,h2,h3,h4,h5{font-family:'Cormorant Garamond',serif}
       <div class="modal-field"><label>Telefono</label><span id="m-tel">—</span></div>
       <div class="modal-field"><label>Provenienza</label><span id="m-prov">—</span></div>
       <div class="modal-field"><label>Prezzo stimato</label><span id="m-prezzo">—</span></div>
+      <div class="modal-field"><label>Pagamento</label>
+        <span id="m-pagato-badge" style="display:inline-flex;align-items:center;gap:.4rem;font-size:.8rem;font-weight:700;">—</span>
+        <button id="btn-pagato" onclick="togglePagato()" style="margin-left:.6rem;font-size:.72rem;padding:.25rem .6rem;border:1.5px solid var(--caffe);border-radius:.4rem;background:transparent;color:var(--caffe);cursor:pointer;font-family:inherit;font-weight:700;">Segna pagato</button>
+      </div>
       <div class="modal-field full"><label>Note</label><span id="m-note">—</span></div>
     </div>
     <div class="modal-divider"></div>
@@ -812,7 +817,8 @@ function renderAll() {
   renderDashboard();
   renderCalendar();
   renderList();
-  chartsRendered = false; // force re-render on next visit
+  aggiornaBadgeTab();
+  chartsRendered = false;
   if (document.getElementById('sec-statistiche').classList.contains('active')) renderCharts();
 }
 
@@ -1104,6 +1110,7 @@ function openModal(id) {
   const digits = (b.telefono || '').replace(/\D/g, '');
   document.getElementById('m-lingua').value = (!digits || digits.startsWith('39')) ? 'it' : 'en';
 
+  aggiornaBadgePagato(!!b.pagato);
   document.getElementById('modal').classList.add('open');
   document.body.style.overflow = 'hidden';
 }
@@ -1277,6 +1284,65 @@ async function rifiutaPrenotazione() {
     btnC.disabled = btnR.disabled = false;
     btnR.textContent = '✗ Rifiuta e invia Email';
   }
+}
+
+/* ── PAGATO ────────────────────────────────────────────────────── */
+function aggiornaBadgePagato(pagato) {
+  const badge = document.getElementById('m-pagato-badge');
+  const btn   = document.getElementById('btn-pagato');
+  if (pagato) {
+    badge.innerHTML = '<span style="color:#15803D">✓ Pagato</span>';
+    btn.textContent = 'Segna non pagato';
+  } else {
+    badge.innerHTML = '<span style="color:#D97706">⏳ Non pagato</span>';
+    btn.textContent = 'Segna pagato';
+  }
+}
+
+async function togglePagato() {
+  if (!currentModalId) return;
+  const b = bookings.find(x => x.id === currentModalId);
+  if (!b) return;
+  const nuovoPagato = !b.pagato;
+  if (isConfigured) {
+    try {
+      await db.collection(COLLECTION).doc(currentModalId).update({ pagato: nuovoPagato });
+      b.pagato = nuovoPagato;
+    } catch(e) { showToastG('Errore aggiornamento'); return; }
+  } else {
+    b.pagato = nuovoPagato;
+  }
+  aggiornaBadgePagato(nuovoPagato);
+  showToastG(nuovoPagato ? '✓ Segnato come pagato' : 'Segnato come non pagato');
+}
+
+/* ── EXPORT CSV ────────────────────────────────────────────────── */
+function exportCSV() {
+  const cols = ['Nome','Cognome','Email','Telefono','Check-in','Check-out','Ospiti','Stato','Provenienza','Prezzo Notte','Tassa Soggiorno','Totale','Pagato','Note'];
+  const rows = bookings.map(b => {
+    const p = calcolaPrezzo(b.checkin, b.checkout, b.ospiti);
+    return [
+      b.nome, b.cognome, b.email, b.telefono,
+      b.checkin, b.checkout, b.ospiti, b.stato, b.provenienza,
+      b.prezzoNotte || p.ppn,
+      b.tassaSoggiorno ?? p.tassa,
+      b.prezzoTotale || p.totale,
+      b.pagato ? 'Sì' : 'No',
+      (b.note || '').replace(/,/g, ';'),
+    ].map(v => `"${v ?? ''}"`).join(',');
+  });
+  const csv = [cols.join(','), ...rows].join('\n');
+  const a = document.createElement('a');
+  a.href = 'data:text/csv;charset=utf-8,﻿' + encodeURIComponent(csv);
+  a.download = `prenotazioni_${new Date().toISOString().split('T')[0]}.csv`;
+  a.click();
+  showToastG('✓ CSV scaricato');
+}
+
+/* ── BADGE TAB ─────────────────────────────────────────────────── */
+function aggiornaBadgeTab() {
+  const pending = bookings.filter(b => b.stato === 'in_attesa').length;
+  document.title = pending > 0 ? `(${pending}) Gestionale – Dimora Stella` : 'Gestionale – Dimora Stella';
 }
 
 /* ── KEYBOARD ──────────────────────────────────────────────────── */

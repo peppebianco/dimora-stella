@@ -838,6 +838,47 @@
   footer .f-credits { font-size:.72rem; opacity:.45; margin-top:1.5rem; }
 
   /* ════════════════════════════════════════
+     LANG TOGGLE
+  ════════════════════════════════════════ */
+  .lang-toggle {
+    display:flex; gap:.2rem;
+    background:var(--crema);
+    border-radius:2rem;
+    padding:.25rem;
+    border:1px solid var(--tufo);
+  }
+  .lang-btn {
+    border:none; background:transparent;
+    padding:.3rem .7rem; border-radius:2rem;
+    font-size:.72rem; font-weight:700; letter-spacing:.08em;
+    cursor:pointer; color:var(--testo); transition:.2s;
+  }
+  .lang-btn.active { background:var(--caffe); color:#fff; }
+
+  /* ════════════════════════════════════════
+     FAQ
+  ════════════════════════════════════════ */
+  .faq-item {
+    border-bottom:1px solid rgba(155,110,62,.2);
+    overflow:hidden;
+  }
+  .faq-item:first-child { border-top:1px solid rgba(155,110,62,.2); }
+  .faq-q {
+    display:flex; justify-content:space-between; align-items:center;
+    padding:1.2rem 0; cursor:pointer; gap:1rem;
+    font-size:1rem; font-weight:700; color:var(--noce);
+    font-family:'Cormorant Garamond',serif; font-size:1.15rem;
+  }
+  .faq-q .faq-icon { font-size:1.2rem; color:var(--caffe); flex-shrink:0; transition:.3s; }
+  .faq-item.open .faq-icon { transform:rotate(45deg); }
+  .faq-a {
+    max-height:0; overflow:hidden;
+    transition:max-height .35s ease, padding .35s ease;
+    font-size:.92rem; line-height:1.7; opacity:.8; padding:0;
+  }
+  .faq-item.open .faq-a { max-height:300px; padding-bottom:1.2rem; }
+
+  /* ════════════════════════════════════════
      BACK TO TOP
   ════════════════════════════════════════ */
   .back-top {
@@ -1000,10 +1041,17 @@
     <li><a href="#services">Servizi</a></li>
     <li><a href="#location">Dove Siamo</a></li>
     <li><a href="#reviews">Recensioni</a></li>
+    <li><a href="#faq">FAQ</a></li>
     <li><a href="#booking" class="btn-prenota-nav">Prenota</a></li>
   </ul>
-  <div class="hamburger" id="hamburger" onclick="toggleMenu()">
-    <span></span><span></span><span></span>
+  <div style="display:flex;align-items:center;gap:.8rem;">
+    <div class="lang-toggle">
+      <button class="lang-btn active" onclick="setLang('it',this)">IT</button>
+      <button class="lang-btn" onclick="setLang('en',this)">EN</button>
+    </div>
+    <div class="hamburger" id="hamburger" onclick="toggleMenu()">
+      <span></span><span></span><span></span>
+    </div>
   </div>
 </nav>
 
@@ -1494,7 +1542,7 @@
           <div class="c-icon">✉️</div>
           <div class="c-info">
             <strong>Email</strong>
-            <a href="mailto:info@dimorastella.it">info@dimorastella.it</a>
+            <a href="mailto:info@dimorastella.com">info@dimorastella.com</a>
           </div>
         </div>
 
@@ -1517,11 +1565,23 @@
   </div>
 </section>
 
+<!-- ═══ FAQ ══════════════════════════════════════════════════════ -->
+<section id="faq" style="background:var(--crema);">
+  <div class="container" style="max-width:760px;">
+    <div style="text-align:center; margin-bottom:3rem;">
+      <span class="section-label" data-it="Domande frequenti" data-en="FAQ">Domande frequenti</span>
+      <h2 class="section-title" data-it="Tutto quello che <em>vuoi sapere</em>" data-en="Everything you <em>need to know</em>">Tutto quello che <em>vuoi sapere</em></h2>
+      <div class="section-divider" style="margin:0 auto;"></div>
+    </div>
+    <div class="faq-list" id="faqList"></div>
+  </div>
+</section>
+
 <!-- ═══ FOOTER ════════════════════════════════════════════════════ -->
 <footer>
   <div class="f-logo">Dimora <em>Stella</em></div>
   <p>Via Galiani · Pezze di Greco (BR) · Puglia · Italia</p>
-  <p><a href="tel:+393807752931">+39 380 775 2931</a> · <a href="mailto:info@dimorastella.it">info@dimorastella.it</a></p>
+  <p><a href="tel:+393807752931">+39 380 775 2931</a> · <a href="mailto:info@dimorastella.com">info@dimorastella.com</a></p>
   <div class="f-divider"></div>
   <p>
     <a href="#about">La Dimora</a> &nbsp;·&nbsp;
@@ -1529,6 +1589,7 @@
     <a href="#booking">Prenota</a> &nbsp;·&nbsp;
     <a href="#contact">Contatti</a>
   </p>
+  <p class="f-credits">CIN: IT074007C2000125852 &nbsp;·&nbsp; CIS: BR07400791000077244</p>
   <p class="f-credits">© 2026 Dimora Stella · Tutti i diritti riservati</p>
 </footer>
 
@@ -1704,7 +1765,7 @@ function submitBooking(e) {
     const body = encodeURIComponent(
 `Nuova richiesta – Dimora Stella\n\nNome: ${nome} ${cognome}\nEmail: ${email}\nTelefono: ${tel}\nCheck-in: ${document.getElementById('checkin').value}\nCheck-out: ${document.getElementById('checkout').value}\nOspiti: ${ospiti}\nNote: ${note}\n\n--- dimorastella.it ---`
     );
-    window.location.href = `mailto:info@dimorastella.it?subject=${subject}&body=${body}`;
+    window.location.href = `mailto:info@dimorastella.com?subject=${subject}&body=${body}`;
     showToast('✓ Richiesta inviata! Risponderemo entro 24 ore.');
     e.target.reset();
     return;
@@ -1860,6 +1921,92 @@ document.querySelectorAll('.service-card, .review-card, .price-card, .about-feat
 
 // Carica date disabilitate (Firebase + iCal Airbnb/Booking)
 loadDisabledDates();
+
+/* ── FAQ ─────────────────────────────────────────────────────── */
+const FAQ_DATA = {
+  it: [
+    { q: 'Sono ammessi animali domestici?', a: 'Spiacenti, per il momento non accettiamo animali domestici nella struttura.' },
+    { q: 'È disponibile il parcheggio?', a: 'Sì, è disponibile parcheggio gratuito sulla strada pubblica davanti alla struttura.' },
+    { q: 'Il check-in tardivo è possibile?', a: 'Sì, organizziamo il check-in in base alle vostre esigenze. Basta comunicarcelo in anticipo.' },
+    { q: 'La colazione è inclusa?', a: 'Sì, la colazione pugliese è inclusa nel prezzo: briosche, caffè, thè e fette biscottate ogni mattina.' },
+    { q: 'Quante persone possono soggiornare?', a: 'La struttura può ospitare fino a 4 persone.' },
+    { q: 'C\'è la connessione WiFi?', a: 'Sì, la connessione fibra ottica è disponibile in tutta la struttura, perfetta anche per lo smart working.' },
+    { q: 'Come si raggiunge la struttura?', a: 'Siamo in Via Galiani, Pezze di Greco (BR). A 25 km dall\'aeroporto di Brindisi e a 10 km dalle spiagge di Torre Canne.' },
+    { q: 'Qual è la politica di cancellazione?', a: 'Cancellazione gratuita fino a 30 giorni prima dell\'arrivo. Nessun rimborso per cancellazioni entro 30 giorni dall\'arrivo.' },
+  ],
+  en: [
+    { q: 'Are pets allowed?', a: 'Sorry, we do not currently accept pets at the property.' },
+    { q: 'Is parking available?', a: 'Yes, free parking is available on the public street in front of the property.' },
+    { q: 'Is late check-in possible?', a: 'Yes, we arrange check-in based on your needs. Just let us know in advance.' },
+    { q: 'Is breakfast included?', a: 'Yes, a Puglian breakfast is included: croissants, coffee, tea and biscuits every morning.' },
+    { q: 'How many guests can stay?', a: 'The property can accommodate up to 4 guests.' },
+    { q: 'Is there WiFi?', a: 'Yes, fibre optic connection is available throughout the property, perfect for remote working too.' },
+    { q: 'How do I get there?', a: 'We are at Via Galiani, Pezze di Greco (BR). 25 km from Brindisi Airport and 10 km from Torre Canne beaches.' },
+    { q: 'What is the cancellation policy?', a: 'Free cancellation up to 30 days before arrival. No refund for cancellations within 30 days of arrival.' },
+  ]
+};
+
+function renderFAQ(lang) {
+  const list = document.getElementById('faqList');
+  list.innerHTML = FAQ_DATA[lang].map((f, i) => `
+    <div class="faq-item" onclick="toggleFAQ(this)">
+      <div class="faq-q">${f.q}<span class="faq-icon">+</span></div>
+      <div class="faq-a">${f.a}</div>
+    </div>`).join('');
+}
+function toggleFAQ(el) { el.classList.toggle('open'); }
+
+/* ── LINGUA ──────────────────────────────────────────────────── */
+let currentLang = 'it';
+
+const TRANSLATIONS = {
+  // NAV
+  '[href="#about"]':    { it:'La Dimora', en:'The Villa' },
+  '[href="#gallery"]':  { it:'Galleria',  en:'Gallery' },
+  '[href="#services"]': { it:'Servizi',   en:'Services' },
+  '[href="#location"]': { it:'Dove Siamo',en:'Location' },
+  '[href="#reviews"]':  { it:'Recensioni',en:'Reviews' },
+  '[href="#booking"].btn-prenota-nav': { it:'Prenota', en:'Book Now' },
+  // HERO
+  '.eyebrow':   { it:'✦ Casa Vacanze · Pezze di Greco · Puglia ✦', en:'✦ Holiday Home · Pezze di Greco · Puglia ✦' },
+  '.subtitle':  { it:'Lamia a stella in tufo a vista — nel cuore della Valle d\'Itria', en:'Star-shaped lamia in exposed tuff — in the heart of Valle d\'Itria' },
+  // BOOKING FORM
+  '#booking .bc-sub': { it:'Compila il modulo — risponderemo entro 24 ore', en:'Fill the form — we\'ll reply within 24 hours' },
+  '.booking-submit':  { it:'✦ Invia Richiesta di Prenotazione', en:'✦ Send Booking Request' },
+  '.booking-note':    { it:'La prenotazione sarà confermata dopo verifica disponibilità.<br>Nessun addebito fino alla conferma.', en:'Booking confirmed after availability check.<br>No charge until confirmation.' },
+};
+
+function setLang(lang, btn) {
+  currentLang = lang;
+  document.querySelectorAll('.lang-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  document.documentElement.lang = lang;
+
+  // Traduci elementi con data-it / data-en
+  document.querySelectorAll('[data-it]').forEach(el => {
+    el.innerHTML = el.dataset[lang] || el.dataset.it;
+  });
+
+  // Traduci elementi dalla mappa
+  Object.entries(TRANSLATIONS).forEach(([sel, vals]) => {
+    document.querySelectorAll(sel).forEach(el => {
+      if (vals[lang]) el.innerHTML = vals[lang];
+    });
+  });
+
+  // Traduci label form
+  const labels = {
+    it: ['Nome','Cognome','Email','Telefono','Check-in','Check-out','Ospiti','Come ci hai trovato?','Note o richieste speciali'],
+    en: ['First name','Last name','Email','Phone','Check-in','Check-out','Guests','How did you find us?','Notes or special requests'],
+  };
+  document.querySelectorAll('#bookingForm label').forEach((el, i) => {
+    if (labels[lang][i]) el.textContent = labels[lang][i];
+  });
+
+  renderFAQ(lang);
+}
+
+renderFAQ('it');
 </script>
 </body>
 </html>
