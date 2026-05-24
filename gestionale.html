@@ -1086,7 +1086,8 @@ function openModal(id) {
   document.getElementById('m-tel').textContent      = b.telefono||'—';
   document.getElementById('m-prov').textContent     = b.provenienza||'—';
   document.getElementById('m-note').textContent     = b.note||'—';
-  document.getElementById('m-prezzo').textContent   = `€${p.ppn}/notte × ${p.notti} = €${b.prezzoTotale||p.totale}`;
+  const tassa = b.tassaSoggiorno ?? p.tassa;
+  document.getElementById('m-prezzo').textContent   = `€${p.ppn}/notte × ${p.notti} = €${b.prezzoSoggiorno||p.soggiorno} + €${tassa} tassa = €${b.prezzoTotale||p.totale}`;
   const badge = document.getElementById('m-badge');
   badge.textContent = statusLabel(b.stato); badge.className = `bc-badge ${b.stato}`;
   document.getElementById('m-stato-select').value = b.stato;
@@ -1160,13 +1161,17 @@ function closeSidebar() {
 }
 
 /* ── UTILS ─────────────────────────────────────────────────────── */
-function calcolaPrezzo(checkin, checkout) {
-  if (!checkin||!checkout) return {notti:0,ppn:80,totale:0};
+function calcolaPrezzo(checkin, checkout, ospiti) {
+  if (!checkin||!checkout) return {notti:0,ppn:80,soggiorno:0,tassa:0,totale:0};
   const d1=new Date(checkin), d2=new Date(checkout);
   const notti=Math.max(1,Math.round((d2-d1)/86400000));
   const m=d1.getMonth()+1;
-  const ppn=(m>=7&&m<=8)?140:(m===5||m===6||m===9)?110:80;
-  return {notti,ppn,totale:notti*ppn};
+  const n=parseInt(ospiti)||2;
+  const is4=n>=3;
+  const ppn=is4?([7,8].includes(m)?260:[5,6,9].includes(m)?200:150):([7,8].includes(m)?140:[5,6,9].includes(m)?110:80);
+  const soggiorno=notti*ppn;
+  const tassa=parseFloat((1.50*n*Math.min(notti,7)).toFixed(2));
+  return {notti,ppn,soggiorno,tassa,totale:soggiorno+tassa};
 }
 function statusColor(s) { return {in_attesa:'#D97706',confermata:'#15803D',cancellata:'#DC2626',completata:'#64748B',bloccata:'#7C3AED'}[s]||'#9B6E3E'; }
 function statusLabel(s) { return {in_attesa:'In Attesa',confermata:'Confermata',cancellata:'Cancellata',completata:'Completata',bloccata:'Bloccata'}[s]||s; }

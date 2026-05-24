@@ -1399,6 +1399,31 @@
           <div class="pc-note">Colazione inclusa</div>
         </div>
 
+        <!-- Riepilogo totale dinamico -->
+        <div id="price-summary" style="display:none; background:var(--crema); border-radius:var(--r); padding:1.2rem 1.5rem; margin-bottom:1rem; border:1px solid var(--tufo);">
+          <div style="font-size:.72rem; letter-spacing:.15em; text-transform:uppercase; color:var(--caffe); font-weight:700; margin-bottom:.8rem;">Riepilogo soggiorno</div>
+          <div style="display:flex; justify-content:space-between; font-size:.9rem; margin-bottom:.4rem;">
+            <span id="ps-notti-label">— notti</span>
+            <span id="ps-notti-val">€ —</span>
+          </div>
+          <div style="display:flex; justify-content:space-between; font-size:.9rem; margin-bottom:.4rem; opacity:.75;">
+            <span id="ps-tassa-label">Tassa soggiorno</span>
+            <span id="ps-tassa-val">€ —</span>
+          </div>
+          <div style="border-top:1px solid var(--tufo); margin:.6rem 0;"></div>
+          <div style="display:flex; justify-content:space-between; font-size:1rem; font-weight:700; color:var(--noce);">
+            <span>Totale</span>
+            <span id="ps-totale">€ —</span>
+          </div>
+        </div>
+
+        <!-- Politica cancellazione -->
+        <div style="background:#FFF8F0; border-radius:var(--r); padding:1rem 1.2rem; margin-bottom:1rem; border-left:3px solid var(--tufo); font-size:.8rem; line-height:1.6; opacity:.85;">
+          <strong style="display:block; margin-bottom:.3rem; color:var(--noce);">Politica di cancellazione</strong>
+          Cancellazione gratuita fino a 30 giorni prima dell'arrivo.<br>
+          Nessun rimborso per cancellazioni entro 30 giorni dall'arrivo.
+        </div>
+
         <div class="booking-contact-alt">
           <p>Preferisci prenotare direttamente su WhatsApp?</p>
           <a href="https://wa.me/393807752931?text=Ciao!%20Vorrei%20prenotare%20Dimora%20Stella%20a%20Pezze%20di%20Greco" target="_blank" class="wa-btn">
@@ -1591,6 +1616,7 @@ const checkinPicker = flatpickr('#checkin', {
         checkoutPicker.setDate(minOut);
       }
     }
+    aggiornaSommario();
   }
 });
 
@@ -1599,7 +1625,10 @@ const checkoutPicker = flatpickr('#checkout', {
   dateFormat: 'd/m/Y',
   minDate: tomorrow,
   disableMobile: false,
+  onChange: () => aggiornaSommario(),
 });
+
+document.getElementById('ospiti').addEventListener('change', aggiornaSommario);
 
 /* ── LIGHTBOX ────────────────────────────────────────────────── */
 const photos = [
@@ -1685,11 +1714,26 @@ function submitBooking(e) {
   btn.disabled = true;
   btn.textContent = 'Invio in corso...';
 
+  const numOspiti = parseInt(ospiti);
+  const notti = Math.max(1, Math.round((checkoutD - checkinD) / 86400000));
+  const m = checkinD.getMonth() + 1;
+  const is4 = numOspiti >= 3;
+  const ppn = is4
+    ? ([7,8].includes(m) ? 260 : [5,6,9].includes(m) ? 200 : 150)
+    : ([7,8].includes(m) ? 140 : [5,6,9].includes(m) ? 110 : 80);
+  const tassaSoggiorno = parseFloat((1.50 * numOspiti * Math.min(notti, 7)).toFixed(2));
+  const prezzoSoggiorno = ppn * notti;
+  const prezzoTotale = prezzoSoggiorno + tassaSoggiorno;
+
   db_sito.collection('prenotazioni').add({
     nome, cognome, email, telefono: tel,
     checkin, checkout,
-    ospiti: parseInt(ospiti),
+    ospiti: numOspiti,
     provenienza, note,
+    prezzoNotte: ppn,
+    prezzoSoggiorno,
+    tassaSoggiorno,
+    prezzoTotale,
     stato: 'in_attesa',
     timestamp: firebase.firestore.FieldValue.serverTimestamp()
   }).then(() => {
@@ -1747,6 +1791,35 @@ async function loadDisabledDates() {
 }
 
 
+/* ── TASSA SOGGIORNO ─────────────────────────────────────────── */
+const TASSA_PPN = 1.50; // €/persona/notte, max 7 notti (Comune di Fasano)
+
+function calcolaTassa(ospiti, notti) {
+  return TASSA_PPN * parseInt(ospiti || 2) * Math.min(notti, 7);
+}
+
+function aggiornaSommario() {
+  const ci = checkinPicker.selectedDates[0];
+  const co = checkoutPicker.selectedDates[0];
+  const ospiti = parseInt(document.getElementById('ospiti').value) || 2;
+  const summary = document.getElementById('price-summary');
+  if (!ci || !co) { summary.style.display = 'none'; return; }
+  const notti = Math.max(1, Math.round((co - ci) / 86400000));
+  const m = ci.getMonth() + 1;
+  const is4 = ospiti >= 3;
+  const ppn = is4
+    ? ([7,8].includes(m) ? 260 : [5,6,9].includes(m) ? 200 : 150)
+    : ([7,8].includes(m) ? 140 : [5,6,9].includes(m) ? 110 : 80);
+  const soggiorno = ppn * notti;
+  const tassa = calcolaTassa(ospiti, notti);
+  document.getElementById('ps-notti-label').textContent = `€${ppn}/notte × ${notti} nott${notti===1?'e':'i'}`;
+  document.getElementById('ps-notti-val').textContent = `€ ${soggiorno}`;
+  document.getElementById('ps-tassa-label').textContent = `Tassa soggiorno (€1,50 × ${ospiti} pers. × ${Math.min(notti,7)} notti)`;
+  document.getElementById('ps-tassa-val').textContent = `€ ${tassa.toFixed(2)}`;
+  document.getElementById('ps-totale').textContent = `€ ${(soggiorno + tassa).toFixed(2)}`;
+  summary.style.display = 'block';
+}
+
 /* ── TOGGLE OSPITI / PREZZI ──────────────────────────────────── */
 function setGuests(n, btn) {
   document.querySelectorAll('.gtoggle-btn').forEach(b => b.classList.remove('active'));
@@ -1754,6 +1827,7 @@ function setGuests(n, btn) {
   document.querySelectorAll('.pc-val').forEach(el => {
     el.textContent = n === 4 ? el.dataset['4'] : el.dataset.base;
   });
+  aggiornaSommario();
 }
 
 /* ── SMOOTH SCROLL OFFSET ────────────────────────────────────── */
