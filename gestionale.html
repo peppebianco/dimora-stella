@@ -177,18 +177,45 @@ h1,h2,h3,h4,h5{font-family:'Cormorant Garamond',serif}
 .up-date .up-m{font-size:.6rem;text-transform:uppercase;letter-spacing:.05em;opacity:.85}
 .up-info .up-name{font-weight:700;font-size:.88rem;color:var(--noce)}
 .up-info .up-detail{font-size:.73rem;color:#aaa;margin-top:.1rem}
-.pending-item{display:flex;align-items:center;justify-content:space-between;padding:.6rem 0;border-bottom:1px solid #f5ede0}
-.pending-item:last-child{border-bottom:none}
-.pend-name{font-weight:700;font-size:.88rem;color:var(--noce)}
-.pend-dates{font-size:.73rem;color:var(--caffe);margin-top:.05rem}
-.btn-confirm-quick{padding:.3rem .8rem;background:#D1FAE5;color:#15803D;border:1.5px solid #15803D;border-radius:2rem;font-size:.7rem;font-weight:700;cursor:pointer;transition:.15s;white-space:nowrap}
-.btn-confirm-quick:hover{background:#15803D;color:#fff}
 .empty-dash{font-size:.8rem;color:#ccc;padding:1rem 0;text-align:center}
+
+/* ══ NOTIFICHE RICHIESTE ══ */
+.notif-section{margin-bottom:1.5rem}
+.notif-section-title{font-size:.72rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:#B45309;margin-bottom:.9rem;display:flex;align-items:center;gap:.5rem}
+.notif-section-title .notif-count{background:#D97706;color:#fff;border-radius:2rem;padding:.1rem .55rem;font-size:.7rem}
+.notif-card{background:#fff;border-radius:var(--r2);box-shadow:0 2px 12px rgba(180,120,40,.13);border-left:4px solid #D97706;padding:1.1rem 1.4rem;margin-bottom:.9rem;transition:box-shadow .2s}
+.notif-card:hover{box-shadow:0 4px 20px rgba(180,120,40,.2)}
+.notif-header{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:.9rem;flex-wrap:wrap;gap:.4rem}
+.notif-name{font-size:1.08rem;font-weight:700;color:var(--noce)}
+.notif-badge{font-size:.65rem;background:#FEF3C7;color:#B45309;border:1px solid #FCD34D;border-radius:2rem;padding:.15rem .6rem;font-weight:700;letter-spacing:.04em;white-space:nowrap;align-self:flex-start;margin-top:.15rem}
+.notif-dates{display:flex;align-items:center;gap:1rem;margin-bottom:.75rem;flex-wrap:wrap}
+.notif-date-block{text-align:center;min-width:60px}
+.notif-date-lbl{font-size:.58rem;letter-spacing:.09em;text-transform:uppercase;color:#aaa;margin-bottom:.1rem}
+.notif-date-val{font-size:.95rem;font-weight:700;color:var(--noce)}
+.notif-date-val span{display:block;font-size:.62rem;font-weight:400;color:var(--caffe)}
+.notif-arrow{color:#D97706;font-size:1.4rem;line-height:1;padding-top:.3rem}
+.notif-nights{background:#FEF3C7;color:#B45309;border-radius:.4rem;padding:.25rem .6rem;font-size:.75rem;font-weight:700;white-space:nowrap;align-self:center}
+.notif-pills{display:flex;gap:.45rem;flex-wrap:wrap;margin-bottom:.7rem}
+.notif-pill{background:#f5f0e8;color:var(--caffe);font-size:.72rem;padding:.2rem .65rem;border-radius:1rem;font-weight:600}
+.notif-pill.price{background:#F0FDF4;color:#15803D}
+.notif-contacts{display:flex;gap:1.2rem;font-size:.78rem;margin-bottom:.75rem;flex-wrap:wrap}
+.notif-contacts a{color:var(--caffe);text-decoration:none;font-weight:600}
+.notif-contacts a:hover{text-decoration:underline}
+.notif-note{font-size:.77rem;color:#888;font-style:italic;margin-bottom:.8rem;background:#fafafa;padding:.5rem .7rem;border-radius:.4rem;border-left:2px solid #e2c99a}
+.notif-actions{display:flex;gap:.6rem}
+.btn-accept{flex:1;padding:.62rem .5rem;background:#D1FAE5;color:#15803D;border:1.5px solid #15803D;border-radius:.5rem;font-size:.82rem;font-weight:700;cursor:pointer;transition:.15s;letter-spacing:.03em}
+.btn-accept:hover{background:#15803D;color:#fff}
+.btn-reject{flex:1;padding:.62rem .5rem;background:#FEE2E2;color:#DC2626;border:1.5px solid #DC2626;border-radius:.5rem;font-size:.82rem;font-weight:700;cursor:pointer;transition:.15s;letter-spacing:.03em}
+.btn-reject:hover{background:#DC2626;color:#fff}
+.btn-detail-sm{padding:.62rem .8rem;background:transparent;color:var(--caffe);border:1.5px solid var(--caffe);border-radius:.5rem;font-size:.78rem;cursor:pointer;transition:.15s;white-space:nowrap}
+.btn-detail-sm:hover{background:var(--caffe);color:#fff}
+@media(max-width:480px){.notif-actions{flex-direction:column}}
 
 /* ══════════════════════════════════════ CALENDAR ══ */
 .calendar-legend{display:flex;gap:1rem;flex-wrap:wrap;margin-bottom:1rem;font-size:.75rem}
 .leg-item{display:flex;align-items:center;gap:.35rem}
 .leg-dot{width:10px;height:10px;border-radius:2px;flex-shrink:0}
+.cal-scroll{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:0 -1rem;padding:0 1rem .5rem}
 .calendar-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:5px}
 .cal-dow{text-align:center;padding:.5rem;font-size:.68rem;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--caffe)}
 .cal-day{min-height:95px;background:#fff;border:1px solid rgba(226,201,154,.6);border-radius:var(--r);padding:7px 6px;cursor:pointer;overflow:hidden;transition:box-shadow .2s,background .15s}
@@ -340,12 +367,21 @@ h1,h2,h3,h4,h5{font-family:'Cormorant Garamond',serif}
   #nuovaForm{overflow-y:auto}
   .form-col .form-section.grow{flex:none}
   .form-col .form-section.grow .grow-field textarea{height:100px;resize:vertical}
+  /* Calendario: griglia minima 500px, scorre orizzontalmente */
+  .calendar-grid{min-width:500px;gap:3px}
+  .cal-dow{padding:.4rem .05rem;font-size:.6rem;letter-spacing:.03em}
+  .cal-day{min-height:74px;padding:5px 3px}
+  .cal-day-num{font-size:.74rem}
+  .cal-day.today .cal-day-num{width:20px;height:20px;font-size:.65rem}
 }
 @media(max-width:480px){
   .stats-grid{grid-template-columns:1fr 1fr}
-  .cal-booking-bar{display:none}
-  .cal-day{min-height:55px}
   .insights-row{grid-template-columns:1fr 1fr}
+  /* Calendario su schermi piccoli */
+  .calendar-grid{min-width:460px;gap:2px}
+  .cal-day{min-height:60px;padding:4px 2px}
+  .cal-booking-bar{display:none}
+  .cal-day-num{font-size:.7rem}
 }
 </style>
 </head>
@@ -448,6 +484,9 @@ h1,h2,h3,h4,h5{font-family:'Cormorant Garamond',serif}
           <p id="welcomeDate"></p>
         </div>
 
+        <!-- Notifiche richieste in attesa -->
+        <div id="pending-notifications"></div>
+
         <div class="stats-grid">
           <div class="stat-card-new">
             <div class="stat-icon total">🏡</div>
@@ -482,9 +521,9 @@ h1,h2,h3,h4,h5{font-family:'Cormorant Garamond',serif}
             <div id="upcoming-list"></div>
           </div>
           <div class="dash-card">
-            <div class="dash-card-title">⏳ In attesa di conferma</div>
-            <div class="dash-card-sub">Rispondi entro 24 ore</div>
-            <div id="pending-list"></div>
+            <div class="dash-card-title">📅 Check-out recenti</div>
+            <div class="dash-card-sub">Soggiorni terminati negli ultimi 7 giorni</div>
+            <div id="checkout-list"></div>
           </div>
         </div>
       </div>
@@ -497,8 +536,10 @@ h1,h2,h3,h4,h5{font-family:'Cormorant Garamond',serif}
           <div class="leg-item"><div class="leg-dot" style="background:var(--cancelled)"></div>Cancellata</div>
           <div class="leg-item"><div class="leg-dot" style="background:var(--blocked)"></div>Bloccata</div>
         </div>
-        <div id="calendarGrid" class="calendar-grid">
-          <div class="loading"><div class="spinner"></div></div>
+        <div class="cal-scroll">
+          <div id="calendarGrid" class="calendar-grid">
+            <div class="loading"><div class="spinner"></div></div>
+          </div>
         </div>
       </div>
 
@@ -672,6 +713,11 @@ h1,h2,h3,h4,h5{font-family:'Cormorant Garamond',serif}
         <span id="m-pagato-badge" style="display:inline-flex;align-items:center;gap:.4rem;font-size:.8rem;font-weight:700;">—</span>
         <button id="btn-pagato" onclick="togglePagato()" style="margin-left:.6rem;font-size:.72rem;padding:.25rem .6rem;border:1.5px solid var(--caffe);border-radius:.4rem;background:transparent;color:var(--caffe);cursor:pointer;font-family:inherit;font-weight:700;">Segna pagato</button>
       </div>
+      <div class="modal-field full" id="stripe-link-row" style="display:none">
+        <label>Pagamento online</label>
+        <button id="btn-stripe" onclick="richiediPagamento()" style="font-size:.78rem;padding:.4rem 1rem;background:#635bff;color:#fff;border:none;border-radius:.4rem;cursor:pointer;font-family:inherit;font-weight:700;transition:.15s">💳 Invia link pagamento</button>
+        <span id="stripe-link-status" style="margin-left:.6rem;font-size:.75rem;color:#888"></span>
+      </div>
       <div class="modal-field full"><label>Note</label><span id="m-note">—</span></div>
     </div>
     <div class="modal-divider"></div>
@@ -680,8 +726,8 @@ h1,h2,h3,h4,h5{font-family:'Cormorant Garamond',serif}
     <div id="m-quick-actions" class="m-quick-actions">
       <div class="m-quick-title">Rispondi alla richiesta</div>
       <div class="m-quick-btns">
-        <button class="m-btn-conferma" id="btn-conferma" onclick="confermaPrenotazione()">✓ Conferma e invia WhatsApp</button>
-        <button class="m-btn-rifiuta"  id="btn-rifiuta"  onclick="rifiutaPrenotazione()">✗ Rifiuta e invia WhatsApp</button>
+        <button class="m-btn-conferma" id="btn-conferma" onclick="confermaPrenotazione()">✓ Conferma e invia Email</button>
+        <button class="m-btn-rifiuta"  id="btn-rifiuta"  onclick="rifiutaPrenotazione()">✗ Rifiuta e invia Email</button>
       </div>
       <div class="m-lingua-row">
         <label>Lingua messaggio</label>
@@ -690,7 +736,6 @@ h1,h2,h3,h4,h5{font-family:'Cormorant Garamond',serif}
           <option value="en">English</option>
         </select>
       </div>
-      <div class="wa-status" id="wa-status"></div>
     </div>
 
     <div class="modal-actions">
@@ -869,20 +914,27 @@ function renderDashboard() {
     }).join('');
   }
 
-  // Pending list
-  const pEl = document.getElementById('pending-list');
-  if (!pending.length) { pEl.innerHTML = '<div class="empty-dash">Nessuna richiesta in attesa 🎉</div>'; }
+  // Check-out recenti (ultimi 7 giorni)
+  const coEl = document.getElementById('checkout-list');
+  const weekAgo = new Date(); weekAgo.setDate(weekAgo.getDate() - 7);
+  const weekAgoStr = weekAgo.toISOString().split('T')[0];
+  const recentCO = bookings.filter(b => b.stato==='completata' && b.checkout >= weekAgoStr && b.checkout <= today)
+    .sort((a,b) => b.checkout < a.checkout ? -1 : 1).slice(0,4);
+  if (!recentCO.length) { coEl.innerHTML = '<div class="empty-dash">Nessun check-out questa settimana</div>'; }
   else {
-    pEl.innerHTML = pending.slice(0,5).map(b => {
-      return `<div class="pending-item">
-        <div>
-          <div class="pend-name">${b.nome} ${b.cognome}</div>
-          <div class="pend-dates">${formatDate(b.checkin)} → ${formatDate(b.checkout)}</div>
+    coEl.innerHTML = recentCO.map(b => {
+      const [,mo,dd] = b.checkout.split('-');
+      return `<div class="upcoming-item">
+        <div class="up-date"><div class="up-d">${dd}</div><div class="up-m">${MESI_SH[parseInt(mo)-1]}</div></div>
+        <div class="up-info">
+          <div class="up-name">${b.nome} ${b.cognome}</div>
+          <div class="up-detail">${b.ospiti} ospit${b.ospiti===1?'e':'i'} · ${b.provenienza||'—'}</div>
         </div>
-        <button class="btn-confirm-quick" onclick="quickConfirm('${b.id}')">Conferma</button>
       </div>`;
     }).join('');
   }
+
+  document.getElementById('pending-notifications').innerHTML = '';
 }
 
 async function quickConfirm(id) {
@@ -896,14 +948,34 @@ async function quickConfirm(id) {
       stato: 'confermata',
       confermaTimestamp: firebase.firestore.FieldValue.serverTimestamp(),
     });
-    // Invia email di conferma (non bloccante)
     if (b.email) {
-      sendEmail({ tipo: 'conferma', nome: b.nome, email: b.email, checkin: b.checkin, checkout: b.checkout, ospiti: b.ospiti, lingua: 'it' })
+      sendEmail({ tipo: 'conferma', nome: b.nome, email: b.email, checkin: b.checkin, checkout: b.checkout, ospiti: b.ospiti, lingua: b.lingua || 'it' })
         .then(r => { if (r.ok && r.mode !== 'test') showToastG('✓ Confermata · Email inviata ✓'); });
     }
     await loadBookings();
     showToastG('✓ Prenotazione confermata');
-  } catch (e) { showToastG('Errore'); }
+  } catch (e) { showToastG('Errore: ' + e.message); }
+}
+
+async function quickReject(id) {
+  const b = bookings.find(x => x.id === id);
+  if (!b) return;
+  if (!confirm(`Rifiutare la richiesta di ${b.nome} ${b.cognome}?\n\nVerrà inviata email di rifiuto.`)) return;
+  if (!isConfigured) {
+    b.stato = 'cancellata'; renderAll(); showToastG('Richiesta rifiutata (demo)'); return;
+  }
+  try {
+    await db.collection(COLLECTION).doc(id).update({
+      stato: 'cancellata',
+      rifiutoTimestamp: firebase.firestore.FieldValue.serverTimestamp(),
+    });
+    if (b.email) {
+      sendEmail({ tipo: 'rifiuto', nome: b.nome, email: b.email, checkin: b.checkin, checkout: b.checkout, ospiti: b.ospiti, lingua: b.lingua || 'it' })
+        .then(r => { if (r.ok && r.mode !== 'test') showToastG('Rifiutata · Email inviata ✓'); });
+    }
+    await loadBookings();
+    showToastG('Richiesta rifiutata');
+  } catch (e) { showToastG('Errore: ' + e.message); }
 }
 
 /* ── CALENDAR ──────────────────────────────────────────────────── */
@@ -1101,7 +1173,6 @@ function openModal(id) {
   // Blocco azioni rapide — solo per prenotazioni in attesa
   const qa = document.getElementById('m-quick-actions');
   qa.style.display = b.stato === 'in_attesa' ? 'block' : 'none';
-  document.getElementById('wa-status').textContent = '';
   document.getElementById('btn-conferma').disabled = false;
   document.getElementById('btn-conferma').textContent = '✓ Conferma e invia Email';
   document.getElementById('btn-rifiuta').disabled = false;
@@ -1111,6 +1182,24 @@ function openModal(id) {
   document.getElementById('m-lingua').value = (!digits || digits.startsWith('39')) ? 'it' : 'en';
 
   aggiornaBadgePagato(!!b.pagato);
+
+  // Riga link pagamento Stripe — visibile solo se confermata e non ancora pagata
+  const stripeRow = document.getElementById('stripe-link-row');
+  const btnStripe = document.getElementById('btn-stripe');
+  const stripeStatus = document.getElementById('stripe-link-status');
+  if (b.stato === 'confermata' && !b.pagato) {
+    stripeRow.style.display = '';
+    if (b.paymentLinkSentAt) {
+      btnStripe.textContent = '💳 Rinvia link pagamento';
+      stripeStatus.textContent = 'Link già inviato';
+    } else {
+      btnStripe.textContent = '💳 Invia link pagamento';
+      stripeStatus.textContent = '';
+    }
+  } else {
+    stripeRow.style.display = 'none';
+  }
+
   document.getElementById('modal').classList.add('open');
   document.body.style.overflow = 'hidden';
 }
@@ -1180,8 +1269,8 @@ function calcolaPrezzo(checkin, checkout, ospiti) {
   const tassa=parseFloat((1.50*n*Math.min(notti,7)).toFixed(2));
   return {notti,ppn,soggiorno,tassa,totale:soggiorno+tassa};
 }
-function statusColor(s) { return {in_attesa:'#D97706',confermata:'#15803D',cancellata:'#DC2626',completata:'#64748B',bloccata:'#7C3AED'}[s]||'#9B6E3E'; }
-function statusLabel(s) { return {in_attesa:'In Attesa',confermata:'Confermata',cancellata:'Cancellata',completata:'Completata',bloccata:'Bloccata'}[s]||s; }
+function statusColor(s) { return {in_attesa:'#D97706',in_pagamento:'#2563EB',confermata:'#15803D',cancellata:'#DC2626',completata:'#64748B',bloccata:'#7C3AED'}[s]||'#9B6E3E'; }
+function statusLabel(s) { return {in_attesa:'In Attesa',in_pagamento:'In Pagamento',confermata:'Confermata',cancellata:'Cancellata',completata:'Completata',bloccata:'Bloccata'}[s]||s; }
 function formatDate(iso) { if(!iso) return '—'; const [y,m,d]=iso.split('-'); return `${d}/${m}/${y}`; }
 function showToastG(msg) { const t=document.getElementById('toastG'); t.textContent=msg; t.classList.add('show'); setTimeout(()=>t.classList.remove('show'),3500); }
 
@@ -1206,11 +1295,8 @@ async function confermaPrenotazione() {
 
   const btnC = document.getElementById('btn-conferma');
   const btnR = document.getElementById('btn-rifiuta');
-  const waEl = document.getElementById('wa-status');
   btnC.disabled = btnR.disabled = true;
   btnC.textContent = 'Confermando…';
-  waEl.style.color = '#888';
-  waEl.textContent = 'Aggiornamento in corso…';
 
   try {
     if (isConfigured) {
@@ -1235,10 +1321,9 @@ async function confermaPrenotazione() {
     closeModal();
     showToastG('✓ Confermata' + msg);
   } catch (e) {
-    waEl.style.color = '#DC2626';
-    waEl.textContent = 'Errore: ' + e.message;
     btnC.disabled = btnR.disabled = false;
     btnC.textContent = '✓ Conferma e invia Email';
+    showToastG('Errore: ' + e.message);
   }
 }
 
@@ -1250,11 +1335,8 @@ async function rifiutaPrenotazione() {
 
   const btnC = document.getElementById('btn-conferma');
   const btnR = document.getElementById('btn-rifiuta');
-  const waEl = document.getElementById('wa-status');
   btnC.disabled = btnR.disabled = true;
   btnR.textContent = 'Rifiutando…';
-  waEl.style.color = '#888';
-  waEl.textContent = 'Aggiornamento in corso…';
 
   try {
     if (isConfigured) {
@@ -1279,10 +1361,9 @@ async function rifiutaPrenotazione() {
     closeModal();
     showToastG('Rifiutata' + msg);
   } catch (e) {
-    waEl.style.color = '#DC2626';
-    waEl.textContent = 'Errore: ' + e.message;
     btnC.disabled = btnR.disabled = false;
     btnR.textContent = '✗ Rifiuta e invia Email';
+    showToastG('Errore: ' + e.message);
   }
 }
 
@@ -1314,6 +1395,39 @@ async function togglePagato() {
   }
   aggiornaBadgePagato(nuovoPagato);
   showToastG(nuovoPagato ? '✓ Segnato come pagato' : 'Segnato come non pagato');
+}
+
+async function richiediPagamento() {
+  if (!currentModalId) return;
+  const b = bookings.find(x => x.id === currentModalId);
+  if (!b) return;
+  const btnStripe    = document.getElementById('btn-stripe');
+  const stripeStatus = document.getElementById('stripe-link-status');
+  btnStripe.disabled = true;
+  btnStripe.textContent = '⏳ Creazione link...';
+  stripeStatus.textContent = '';
+  try {
+    const r = await fetch('/api/create-checkout-session', {
+      method:  'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body:    JSON.stringify({ bookingId: currentModalId }),
+    });
+    const data = await r.json();
+    if (!r.ok || !data.ok) throw new Error(data.error || 'Errore sconosciuto');
+    if (data.mode === 'test') {
+      showToastG('⚠️ Modalità test — chiave Stripe non configurata');
+    } else {
+      showToastG('✓ Link pagamento inviato via email · €' + data.amount);
+      b.paymentLinkSentAt = true;
+    }
+    btnStripe.textContent = '💳 Rinvia link pagamento';
+    stripeStatus.textContent = 'Link inviato ✓';
+  } catch (err) {
+    showToastG('Errore: ' + err.message);
+    btnStripe.textContent = '💳 Invia link pagamento';
+  } finally {
+    btnStripe.disabled = false;
+  }
 }
 
 /* ── EXPORT CSV ────────────────────────────────────────────────── */
